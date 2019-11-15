@@ -1,0 +1,21 @@
+input_lists:
+  # default: testset
+  input1:
+    dataset: 'cifar10'  
+    idx: 10
+  input2:
+    dataset: 'cifar10'
+    idx: 20
+
+
+model_lists:
+  # options = ['lenet', 'resnet18', 'resnet50', 'vgg19', 'densenet121']
+  # note: 'lenet' is only for mnist. others for 'cifar10' and 'imagenet'
+  model1:
+    'resnet18'
+  model2:
+    'vgg19'
+
+
+
+    

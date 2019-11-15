@@ -1,0 +1,6 @@
+# For neural network examples
+torch
+torchvision
+
+# For declarative query 
+pyyaml 
