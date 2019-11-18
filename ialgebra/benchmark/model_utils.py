@@ -11,81 +11,46 @@ import torch.optim as optim
 from torch.optim.lr_scheduler import MultiStepLR
 import torch.backends.cudnn as cudnn
 
-sys.path.append('../ialgebra/')
-from ialgebra.models import *
+sys.path.append('../ialgebra')
+import models
 from ialgebra.benchmark.data_utils import load_data
-from ialgebra.models.config_model import name2class, get_data_params
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0
 
-def load_model(model, layer = None):
+
+name2class = {
+    'lenet': 'LeNet',
+    'resnet18': 'ResNet',
+    'resnet50': 'ResNet',
+    'vgg19': 'VGG',
+    'vgg16': 'VGG',
+    'densenet121': 'DenseNet'
+}
+
+
+def load_model(args):
     """
     load model
 
     Args:
-    :param: str(model_name)
+    :param: str(model_name)   # 'lenet', 'resnet18', 'resnet50', 'vgg19', 'densenet121'
 
     Return:
     :return: model
     """
-    print('==> Building model..')
-    if model == 'vgg19':
-        net = VGG('VGG19')
-    elif model == 'resnet18':
-        net = ResNet18()
-    elif model == 'resnet50':
-        net = ResNet50()
-    elif model == 'densenet121':
-        net = DenseNet121()
-    elif model == 'lenet':
-        net = LeNet()
-    elif model == 'd_resnet50':
-        net = Dynamic_Model(layer)
-
-    net = net.to(device)
-    if device == 'cuda':
-        net = torch.nn.DataParallel(net)
+    _class = getattr(__import__('models'), name2class[args.model_name])
+    if args.layer is not None:
+        model = _class(name=args.model_name, dataset=args.dataset, layer=args.layer)
+    else:
+        model = _class(name=args.model_name, dataset=args.dataset)
+    print("model output:", args.dataset)
+    model = model.to(device)
+    model.eval()
+    if 'cuda' in device:
+        _model = torch.nn.DataParallel(model)
         cudnn.benchmark = True
-
-    return net
-
-
-# ## revised   ???
-# def load_model(model_name):
-#     """
-#     load model
-
-#     Args:
-#     :param: str(model_name)
-
-#     Return:
-#     :return: model
-#     """
-#     _class = getattr(__import__('model.' + name, fromlist=[name2class(name)]), name2class(name))
-#     model = _class(name=args.model_name, data_dir=args.data_dir, dataset=args.dataset,
-#                     layer=args.layer, **params)
-#     model = model.to(device)
-#     if 'cuda' in device:
-#         model = torch.nn.DataParallel(model)
-#         cudnn.benchmark = True
-#     return model
-
-
-# ## Ren
-# def load_model(args):
-#     params = parse_arguments(args)
-#     name=get_model_name(args.model_name)
-#     _class = getattr(__import__('model.' + name,
-#                                 fromlist=[name2class(name)]), name2class(name))
-#     _model = _class(name=args.model_name, data_dir=args.data_dir, dataset=args.dataset,
-#                     layer=args.layer, **params)
-#     _model.eval()
-#     if torch.cuda.is_available():
-#         _model = _model.cuda()
-#     model = parallel_model(_model)
-
-#     return _model, model
+    return model, _model
 
 
 # Training
@@ -136,12 +101,8 @@ def test(args, epoch, net, testloader, criterion):
     acc = 100.*correct/total
     if acc > best_acc:
         print('Saving..')
-        state = {
-            'net': net.state_dict(),
-            'acc': acc,
-        }
         if not os.path.isdir(args.model_dir):
             os.mkdir(args.model_dir)
         model_save_dir = os.path.join(args.model_dir, 'ckpt_{}_{}_{}.t7'.format(args.dataset, args.model_name, args.layer))
-        torch.save(state, model_save_dir)
+        torch.save(net.state_dict(), model_save_dir)
         best_acc = acc

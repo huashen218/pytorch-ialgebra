@@ -64,14 +64,20 @@ def load_data(data_dir, dataset, mode, self_data = False, batch_size=128, shuffl
     """
     _transform = get_transform(dataset, mode)
     if self_data:
-        _dataset = datasets.ImageFolder(root=data_dir, transform=_transform)
+        _dataset = datasets.ImageFolder(root=data_dir, transform=_transform)  # data_dir -> class images
+    elif dataset in ['sample_imagenet']:
+        datadir = '/home/hqs5468/workspace/Codes/projects/pytorch-ialgebra/data/sample_imagenet/data/sample_imagenet/'
+        _dataset = datasets.ImageFolder(root=datadir+mode, transform=_transform)
+    elif dataset == 'imagenet':
+        _dataset = getattr(datasets, dataset_name[dataset])
+        data_dir = '/home/rbp5354/workspace/data/imagenet/data'
+        kwargs = {'root': data_dir, 'download': True, 'transform': _transform}
+        kwargs['split'] = 'val' if mode == 'test' else 'train'
+        _dataset = _dataset(**kwargs)
     else:
         _dataset = getattr(datasets, dataset_name[dataset])
         kwargs = {'root': data_dir, 'download': True, 'transform': _transform}
-        if dataset in ['imagenet']:
-            kwargs['split'] = 'val' if mode == 'test' else 'train'
-        else:
-            kwargs['train'] = (mode == 'train')
+        kwargs['train'] = (mode == 'train')
         _dataset = _dataset(**kwargs)
     dataloader = torch.utils.data.DataLoader(_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
     return dataloader

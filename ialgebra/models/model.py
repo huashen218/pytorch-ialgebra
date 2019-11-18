@@ -7,9 +7,34 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from collections import OrderedDict
+import torchvision
+
+import torch.utils.model_zoo as model_zoo
+
+from torchvision.models.resnet import model_urls
+
+
+
+
+
+
+
 
 sys.path.append('../')
 from benchmark.utils import to_tensor, to_numpy
+
+url_name = {
+    "resnet18": "resnet",
+    "resnet50": "resnet",
+}
+
+
+
+# models_urls = {
+#     "resnet": torchvision.models.resnet.model_urls,
+#     "densenet": torchvision.models.densenet.model_urls,
+#     "vgg": torchvision.models.vgg.model_urls,
+# }
 
 
 global_config = {
@@ -45,11 +70,11 @@ global_config = {
 
 class Model(nn.Module):
     """Meta Model for DNN"""
-    def __init__(self, name='abstact_model', dataset='none', num_classes=None, conv_depth=0, conv_dim=1, fc_depth=0, fc_dim=1, preprocess_ctrl = True, avgpool_ctrl = True, **kwargs):
+    def __init__(self, name='abstact_model', dataset='none', num_classes=None, conv_depth=0, conv_dim=1, fc_depth=0, fc_dim=1, preprocess_ctrl = True, **kwargs):
         super(Model, self).__init__()
         self.dataset = dataset      # dataset = ['mnist', 'cifar10', 'imagenet', 'none']
         self.name = name  # model name
-        self.config = global_config[self.dataset] 
+        self.config = global_config[self.dataset]
         self.num_classes = self.config['num_classes']  # number of classes
         self.map_location = None if torch.cuda.is_available() else 'cpu'  # the location when loading pretrained weights using torch.load
 
@@ -58,8 +83,6 @@ class Model(nn.Module):
         self.fc_depth = fc_depth
         self.fc_dim = fc_dim
         self.preprocess_ctrl = preprocess_ctrl
-        self.avgpool_ctrl = avgpool_ctrl
-
 
         self.features = nn.Identity()   # feature extractor
         self.avgpool = nn.Identity()  # average pooling
@@ -92,11 +115,17 @@ class Model(nn.Module):
         # (channels, height, width) ==> (batch_size: 1, channels, height, width)
         if len(x.shape) == 3:
             x.unsqueeze_(0) 
-        x = self.preprocess(x) if self.preprocess_ctrl else x     # module: preprocess
-        x = self.get_fm(x)                                        # module: feature
-        x = self.avgpool(x) if self.avgpool_ctrl else x           # module: avgpool
+        print("model name:", self.name)
+        print("dataset:", self.dataset)
+        print("model num classes:", self.num_classes)
+        print("input shape:", x.size())
+        x = self.preprocess(x) if self.preprocess_ctrl else x # module: preprocess
+        x = self.features(x)                                       # module: feature
+        x = self.avgpool(x)        # module: avgpool
+        print("x size:", x.size())
+        # exit(-1)
         x = torch.flatten(x, 1)
-        x = self.get_logits_from_fm(x)                            # module: classifier
+        x = self.classifier(x)                            # module: classifier
         return x
 
 
@@ -111,70 +140,7 @@ class Model(nn.Module):
         return x.sub(mean[None, :, None, None]).div(std[None, :, None, None])
 
 
-    # get feature map
-    # input: (batch_size, channels, height, width)
-    # output: (batch_size, [feature_map])
-    def get_fm(self, x):
-        return self.features(x)
+    def load_official_weights(self):
+        pass
 
 
-    # get logits from feature map
-    # input: (batch_size, [feature_map])
-    # output: (batch_size, logits)
-    def get_logits_from_fm(self, x):
-        return self.classifier(x)
-
-
-
-
-    # ##########################  To Do  ##########################
-    # # weights_loc: (default: None) if None, use the default path. Else if the path doesn't exist, quit.
-    # # full: (default: False) whether save feature extractor.
-    # # output: (default: False) whether output help information.
-
-    # def load_pretrained_weights(self, weights_loc=None, full=False, output=False):
-    #     if output:
-    #         print("********Pretrained %s Loaded!********" % self.name)
-
-    #     if weights_loc is None:
-    #         weights_loc = self.data_dir + \
-    #             '%s/model/%s.pth' % (self.dataset, self.name)
-    #         if os.path.exists(weights_loc):
-    #             if output:
-    #                 print("********Load From Saved File: %s********" % weights_loc)
-    #             self.load_state_dict(torch.load(weights_loc, map_location=self.map_location))
-    #         else:
-    #             print('Default model file not exist: ', weights_loc)
-    #             self.load_official_weights()
-    #     elif os.path.exists(weights_loc):
-    #         if output:
-    #             print("********Load From Saved File: %s********" % weights_loc)
-    #         if full:
-    #             self.load_state_dict(
-    #                 torch.load(weights_loc, map_location=self.map_location))
-    #         else:
-    #             self.classifier.load_state_dict(
-    #                 torch.load(weights_loc, map_location=self.map_location))
-    #     else:
-    #         print('File not Found: ', weights_loc)
-    #         self.load_official_weights()
-
-    # # weights_loc: (default: None) if None, use the default path.
-    # # full: (default: False) whether save feature extractor.
-    # def save_weights(self, weights_loc='', full=False):
-    #     if weights_loc == '':
-    #         model_dir = self.data_dir + '%s/model/' % self.dataset
-    #         if not os.path.exists(model_dir):
-    #             os.makedirs(model_dir)
-    #         weights_loc = model_dir+'%s.pth' % (self.name)
-    #         torch.save(self.state_dict(), weights_loc)
-    #     else:
-    #         if full:
-    #             torch.save(self.state_dict(), weights_loc)
-    #         else:
-    #             torch.save(self.classifier.state_dict(), weights_loc)
-
-
-    # # define in concrete model class.
-    # def load_official_weights(self):
-    #     print("Nothing Happens. No official pretrained data to load.")

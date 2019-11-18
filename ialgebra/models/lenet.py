@@ -1,24 +1,16 @@
 # -*- coding: utf-8 -*-
-
-from model import *
-from torchvision.models.resnet import model_urls
+from .model import *
 import torch.nn as nn
 from collections import OrderedDict
-from torchvision import models
-import torch.utils.model_zoo as model_zoo
 
 
-
-# todo
 fc_dim_config = {
-    'mnist':  [0, 0, 0, 0, 0], 
-    'none':     [0, 0, 0, 0, 0]
+    'mnist':  [20*12*12, 50*4*4]
 }
-
 
 class LeNet(Model):
     def __init__(self, name='lenet', dataset='mnist', layer=2, **kwargs):
-        super(LeNet, self).__init__(fc_depth=2, conv_dim = fc_dim_config[dataset][layer-1], fc_dim = 500, avgpool_ctrl = False)
+        super(LeNet, self).__init__(name = name, dataset = dataset, fc_depth=2, conv_dim = fc_dim_config[dataset][layer-1], fc_dim = 500, avgpool_ctrl = False)
         self.layer = layer
         self.name = name
 
@@ -37,12 +29,3 @@ class LeNet(Model):
         for k in range(self.layer):
             feature += lenet["layer"+str(k+1)]
         self.features = nn.Sequential(OrderedDict(feature))
-
-
-
-    # def load_official_weights(self):
-    #     print("********Load From Official Website!********")
-    #     _dict = model_zoo.load_url(model_urls[self.name])
-    #     self.features.load_state_dict(_dict, strict=False)
-    #     if self.num_classes == 1000:
-    #         self.classifier.load_state_dict(_dict, strict=False)

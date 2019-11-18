@@ -1,20 +1,19 @@
-from model import *
-from torchvision.models.resnet import model_urls
+from .model import *
 import torch.nn as nn
 from collections import OrderedDict
 from torchvision import models
 import torch.utils.model_zoo as model_zoo
+from torchvision.models.densenet import model_urls
 
 
 fc_dim_config = {
-    'cifar10': [0, 0, 0, 0], 
-    'imagenet':[0, 0, 0, 0],
-    'none': [0, 0, 0, 0]
+    'cifar10': [128*4*4, 256*2*2, 512, 1024], 
+    'imagenet':[128*28*28, 256*14*14, 512*7*7, 1024*7*7]
 }
 
 class DenseNet(Model):
-    def __init__(self, name='densenet50', dataset='none', layer = 4, **kwargs):
-        super(DenseNet, self).__init__(fc_depth=1, conv_dim = fc_dim_config[dataset][layer-1], avgpool_ctrl = False)
+    def __init__(self, name=None, dataset=None, layer = 4, **kwargs):
+        super(DenseNet, self).__init__(name = name, dataset = dataset, fc_depth=1, conv_dim = fc_dim_config[dataset][layer-1], avgpool_ctrl = False)
         self.layer = layer
         self.name = name
         _model = models.__dict__[self.name](num_classes=self.num_classes)
@@ -31,9 +30,10 @@ class DenseNet(Model):
         self.features = nn.Sequential(OrderedDict(features))
 
 
-    # def load_official_weights(self):
-    #     print("********Load From Official Website!********")
-    #     _dict = model_zoo.load_url(model_urls[self.name])
-    #     self.features.load_state_dict(_dict, strict=False)
-    #     if self.num_classes == 1000:
-    #         self.classifier.load_state_dict(_dict, strict=False)
+    def load_official_weights(self):
+        print("********Load From Official Website!********")
+        _dict = model_zoo.load_url(model_urls[self.name])
+        self.load_state_dict(_dict, strict=False)
+        # self.features.load_state_dict(_dict, strict=False)
+        # if self.num_classes == 1000:
+        #     self.classifier.load_state_dict(_dict, strict=False)
