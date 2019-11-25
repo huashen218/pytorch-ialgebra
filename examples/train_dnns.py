@@ -19,7 +19,8 @@ def main(args):
     # load dataset     parallel_model not done
     trainloader = load_data(args.data_dir, args.dataset, 'train', batch_size = args.batch_size, shuffle=True)
     testloader = load_data(args.data_dir, args.dataset, 'test', batch_size = args.batch_size, shuffle=False)
-    model, parallel_model = load_model(args)
+    # model, parallel_model = load_model(args)
+    model, parallel_model = load_model(args.model_name, args.layer, args.dataset)
 
     if args.dataset in ['imagenet']:       # imagenet
         model.load_official_weights()

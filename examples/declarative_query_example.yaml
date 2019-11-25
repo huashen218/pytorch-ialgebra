@@ -13,9 +13,19 @@ model_lists:
   # note: 'lenet' is only for mnist. others for 'cifar10' and 'imagenet'
   model1:
     'resnet18'
-  model2:
-    'vgg19'
+  layer:
+    '4'
 
 
 
+interpreters:
+  identity:
+    'gradient_saliency'
+  declarative_query:
+    'from f1(x1) where [16, 20, 20, 40]'  # projection
+    'from f1(x1) selece l3'               # selection
+
+
+save_dir:
+  './results'
     

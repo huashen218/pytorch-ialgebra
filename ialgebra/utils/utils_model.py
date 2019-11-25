@@ -29,7 +29,8 @@ name2class = {
 }
 
 
-def load_model(args):
+def load_model(model_name, layer, dataset):
+
     """
     load model
 
@@ -39,18 +40,55 @@ def load_model(args):
     Return:
     :return: model
     """
-    _class = getattr(__import__('models'), name2class[args.model_name])
-    if args.layer is not None:
-        model = _class(name=args.model_name, dataset=args.dataset, layer=args.layer)
+    _class = getattr(__import__('models'), name2class[model_name])
+    if layer is not None:
+        model = _class(name=model_name, dataset=dataset, layer=layer)
     else:
-        model = _class(name=args.model_name, dataset=args.dataset)
-    print("model output:", args.dataset)
+        model = _class(name=model_name, dataset=dataset)
+    print("model output:", dataset)
     model = model.to(device)
     model.eval()
     if 'cuda' in device:
         _model = torch.nn.DataParallel(model)
         cudnn.benchmark = True
     return model, _model
+
+
+def freeze_model(model):
+    for param in model.parameters():
+        param.requires_grad_(False)
+
+
+def load_pretrained_model(model_name, layer, dataset, model_dir):
+    """
+    Function:
+    :load pretrained model
+
+    Args:
+    :param: str(model_name)   # 'lenet', 'resnet18', 'resnet50', 'vgg19', 'densenet121'
+
+    Inputs:
+    :model_name
+    :layer
+    :dataset
+    :model_dir
+
+    Return:
+    :return: model
+    """
+    _class = getattr(__import__('models'), name2class[model_name])
+    if layer is not None:
+        model = _class(name=model_name, dataset=dataset, layer=layer)
+    else:
+        model = _class(name=model_name, dataset=dataset)
+    # load pretrained weights
+    assert os.path.isdir(os.path.join(model_dir)), 'Error: no checkpoint directory found!'
+    model_save_dir = os.path.join(model_dir, 'ckpt_{}_{}_{}.t7'.format(dataset, model_name, layer))
+    model.load_state_dict(torch.load(model_save_dir))
+    model = model.to(device)
+    model.eval()
+    freeze_model(model)  #freeze params' gradients
+    return model
 
 
 # Training

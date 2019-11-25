@@ -15,7 +15,36 @@ dataset_name = {
 }
 
 
-def get_transform(dataset, mode):
+
+preprocess_img_config = {
+    'cifar10': {
+        'mean': [],
+        'std': []
+    },
+
+    'imagenet': {
+        'mean': [0.485, 0.456, 0.406],
+        'std': [0.229, 0.224, 0.225]
+    },
+
+    'other': {
+        'mean': [0, 0, 0],
+        'std': [1, 1, 1]
+    }
+}
+
+
+
+def preprocess_fn(x, dataset):
+    """
+    preprocess data before feeding into model
+    """
+    ts = [torch.unsqueeze((x[:, i] - preprocess_img_config[dataset]['mean'][i]) / preprocess_img_config[dataset]['std'][i], 1) for i in range(3)]
+    return torch.cat(ts, dim=1)
+
+
+
+def _get_transform(dataset, mode):
     """
     generate transform for dataloader
     param
@@ -62,7 +91,7 @@ def load_data(data_dir, dataset, mode, self_data = False, batch_size=128, shuffl
     :dataset: {'mnist', 'cifar10', 'imagenet'}
     return: dataloader
     """
-    _transform = get_transform(dataset, mode)
+    _transform = _get_transform(dataset, mode)
     if self_data:
         _dataset = datasets.ImageFolder(root=data_dir, transform=_transform)  # data_dir -> class images
     elif dataset in ['sample_imagenet']:
@@ -100,20 +129,6 @@ def loader_to_tensor(dataloader):
     inputs_all = torch.cat(inputs_all, dim=0)
     targets_all = torch.cat(targets_all, dim=0)
     return inputs_all, targets_all
-
-
-
-
-
-
-  
-
-
-
-
-    
-
-
 
 
 
