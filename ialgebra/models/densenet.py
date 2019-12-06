@@ -1,13 +1,14 @@
-from .model import *
 import torch.nn as nn
 from collections import OrderedDict
 from torchvision import models
 import torch.utils.model_zoo as model_zoo
 from torchvision.models.densenet import model_urls
 
+from ialgebra.models import *
 
 fc_dim_config = {
-    'cifar10': [128*4*4, 256*2*2, 512, 1024], 
+    # 'cifar10': [128*4*4, 256*2*2, 512, 1024], 
+    'cifar10': [128, 256, 512, 1024], 
     'imagenet':[128*28*28, 256*14*14, 512*7*7, 1024*7*7]
 }
 
@@ -18,16 +19,35 @@ class DenseNet(Model):
         self.name = name
         _model = models.__dict__[self.name](num_classes=self.num_classes)
 
-        pre_feature = [('conv0', _model.features.conv0), ('norm0', _model.features.norm0), ('relu0', _model.features.relu0), ('pool0', _model.features.pool0)]
-        feature = []
-        for i in range(self.layer):
-          feature.append(('denseblock'+str(i+1), getattr(_model.features, 'denseblock'+str(i+1))))
-          if i < 3:
-            feature.append(('transition'+str(i+1), getattr(_model.features, 'transition'+str(i+1))))
-        if self.layer == 4:
-          feature.append(('norm5',  _model.features.norm5))
-        features = pre_feature+feature
-        self.features = nn.Sequential(OrderedDict(features))
+
+        if self.dataset == 'imagenet':
+          pre_feature = [('conv0', _model.features.conv0), ('norm0', _model.features.norm0), ('relu0', _model.features.relu0), ('pool0', _model.features.pool0)]
+          feature = []
+          for i in range(self.layer):
+            feature.append(('denseblock'+str(i+1), getattr(_model.features, 'denseblock'+str(i+1))))
+            if i < 3:
+              feature.append(('transition'+str(i+1), getattr(_model.features, 'transition'+str(i+1))))
+          if self.layer == 4:
+            feature.append(('norm5',  _model.features.norm5))
+          features = pre_feature+feature
+          self.features = nn.Sequential(OrderedDict(features))
+
+        elif self.dataset == 'cifar10':
+          pre_feature = [
+            ('conv0', nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False)), 
+            ('norm0', _model.features.norm0), 
+            ('relu0', _model.features.relu0), 
+            ('pool0', _model.features.pool0)]
+          feature = []
+          for i in range(self.layer):
+            feature.append(('denseblock'+str(i+1), getattr(_model.features, 'denseblock'+str(i+1))))
+            if i < 3:
+              feature.append(('transition'+str(i+1), getattr(_model.features, 'transition'+str(i+1))))
+          if self.layer == 4:
+            feature.append(('norm5',  _model.features.norm5))
+          features = pre_feature+feature
+          self.features = nn.Sequential(OrderedDict(features))
+          self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
 
     def load_official_weights(self):

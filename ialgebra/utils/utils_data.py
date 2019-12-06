@@ -18,8 +18,8 @@ dataset_name = {
 
 preprocess_img_config = {
     'cifar10': {
-        'mean': [],
-        'std': []
+        'mean': [0.4914, 0.4822, 0.4465],
+        'std': [0.2023, 0.1994, 0.2010],
     },
 
     'imagenet': {
@@ -34,6 +34,12 @@ preprocess_img_config = {
 }
 
 
+def to_tensor(x):
+    return x.to(device) if isinstance(x, torch.Tensor) else torch.Tensor(x).to(device)
+
+def to_numpy(x):
+    return x if isinstance(x, np.ndarray) else (x.cpu() if x.is_cuda else x).detach().numpy()
+
 
 def preprocess_fn(x, dataset):
     """
@@ -41,7 +47,6 @@ def preprocess_fn(x, dataset):
     """
     ts = [torch.unsqueeze((x[:, i] - preprocess_img_config[dataset]['mean'][i]) / preprocess_img_config[dataset]['std'][i], 1) for i in range(3)]
     return torch.cat(ts, dim=1)
-
 
 
 def _get_transform(dataset, mode):
@@ -58,6 +63,7 @@ def _get_transform(dataset, mode):
         if mode == 'train':
             _transform = transforms.Compose([
                 transforms.Resize((size, size), interpolation=3),
+                # transforms.RandomCrop(32, padding=4),
                 transforms.RandomHorizontalFlip(),
                 transforms.ToTensor(),
             ])
@@ -109,6 +115,7 @@ def load_data(data_dir, dataset, mode, self_data = False, batch_size=128, shuffl
         kwargs['train'] = (mode == 'train')
         _dataset = _dataset(**kwargs)
     dataloader = torch.utils.data.DataLoader(_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+    print("dataloader:", dataloader)
     return dataloader
 
 
@@ -132,3 +139,33 @@ def loader_to_tensor(dataloader):
 
 
 
+
+# def to_tensor(x, dtype=None, device=None, copy=False):
+#     if x is None:
+#         return None
+#     _dtype = map[dtype] if isinstance(dtype, str) else dtype
+#     _device = device.device if torch.is_tensor(device) else device
+
+#     if isinstance(x, list):
+#         try:
+#             x = torch.stack(x)
+#         except Exception:
+#             pass
+#     try:
+#         x = torch.as_tensor(x, dtype=_dtype, device=_device)
+#     except Exception:
+#         print('tensor: ', x)
+#         raise ValueError()
+#     if _device is None and _cuda and not x.is_cuda:
+#         x = x.cuda()
+#     return x.contiguous()
+
+
+# def to_numpy(x):
+#     if x is None:
+#         return None
+#     if type(x).__module__ == np.__name__:
+#         return x
+#     if torch.is_tensor(x):
+#         return (x.cpu() if x.is_cuda else x).detach().numpy()
+#     return np.array(x)

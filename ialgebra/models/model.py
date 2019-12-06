@@ -7,28 +7,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from collections import OrderedDict
+
 import torchvision
-
 import torch.utils.model_zoo as model_zoo
-
 from torchvision.models.resnet import model_urls
 
-
-
-
-
-
-
-
-sys.path.append('../')
-from benchmark.utils import to_tensor, to_numpy
+from ialgebra.utils.utils_data import to_tensor, preprocess_fn
 
 url_name = {
     "resnet18": "resnet",
     "resnet50": "resnet",
 }
-
-
 
 # models_urls = {
 #     "resnet": torchvision.models.resnet.model_urls,
@@ -111,19 +100,14 @@ class Model(nn.Module):
     # input: (batch_size, channels, height, width)
     # output: (batch_size, logits)
     def forward(self, x):
+
         # if x.shape is (channels, height, width)
         # (channels, height, width) ==> (batch_size: 1, channels, height, width)
         if len(x.shape) == 3:
-            x.unsqueeze_(0) 
-        print("model name:", self.name)
-        print("dataset:", self.dataset)
-        print("model num classes:", self.num_classes)
-        print("input shape:", x.size())
+            x.unsqueeze_(0)
         x = self.preprocess(x) if self.preprocess_ctrl else x # module: preprocess
-        x = self.features(x)                                       # module: feature
+        x = self.features(x)                # module: feature
         x = self.avgpool(x)        # module: avgpool
-        print("x size:", x.size())
-        # exit(-1)
         x = torch.flatten(x, 1)
         x = self.classifier(x)                            # module: classifier
         return x
@@ -138,7 +122,6 @@ class Model(nn.Module):
         mean = to_tensor(self.config['mean'])
         std = to_tensor(self.config['std'])
         return x.sub(mean[None, :, None, None]).div(std[None, :, None, None])
-
 
     def load_official_weights(self):
         pass

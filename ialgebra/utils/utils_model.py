@@ -11,9 +11,9 @@ import torch.optim as optim
 from torch.optim.lr_scheduler import MultiStepLR
 import torch.backends.cudnn as cudnn
 
-sys.path.append('../ialgebra')
-import models
-from ialgebra.benchmark.data_utils import load_data
+from ialgebra.models import models
+from ialgebra.utils.utils_data import load_data
+
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0
@@ -30,7 +30,6 @@ name2class = {
 
 
 def load_model(model_name, layer, dataset):
-
     """
     load model
 
@@ -40,12 +39,14 @@ def load_model(model_name, layer, dataset):
     Return:
     :return: model
     """
-    _class = getattr(__import__('models'), name2class[model_name])
+    # _class = getattr(__import__('ialgebra.models'), name2class[model_name])
+    _class = getattr(getattr(__import__("ialgebra"), "models"), name2class[model_name])
+
+    # _class = getattr('models', name2class[model_name])
     if layer is not None:
         model = _class(name=model_name, dataset=dataset, layer=layer)
     else:
         model = _class(name=model_name, dataset=dataset)
-    print("model output:", dataset)
     model = model.to(device)
     model.eval()
     if 'cuda' in device:
@@ -76,7 +77,8 @@ def load_pretrained_model(model_name, layer, dataset, model_dir):
     Return:
     :return: model
     """
-    _class = getattr(__import__('models'), name2class[model_name])
+    # _class = getattr(__import__('models'), name2class[model_name])
+    _class = getattr('models', name2class[model_name])
     if layer is not None:
         model = _class(name=model_name, dataset=dataset, layer=layer)
     else:
@@ -109,7 +111,6 @@ def train(epoch, net, trainloader, criterion, optimizer):
         _, predicted = outputs.max(1)
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
-
         if batch_idx % 100 == 0:
             print('Epoch: %d, Step: [%d/%d], Loss: %.4f, Accuracy: %.3f%% (%d/%d)'
                     % (epoch+1, batch_idx+1, len(trainloader), train_loss/(batch_idx+1), 100.*correct/total, correct, total))

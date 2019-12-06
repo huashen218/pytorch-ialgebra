@@ -7,13 +7,11 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim.lr_scheduler import MultiStepLR
-sys.path.append('../')
-from ialgebra.benchmark.data_utils import load_data
-from ialgebra.benchmark.model_utils import load_model, train, test
 
+from ialgebra.utils.utils_data import load_data
+from ialgebra.utils.utils_model import load_model, train, test
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
 
 def main(args):
     # load dataset     parallel_model not done
@@ -22,16 +20,16 @@ def main(args):
     # model, parallel_model = load_model(args)
     model, parallel_model = load_model(args.model_name, args.layer, args.dataset)
 
-    if args.dataset in ['imagenet']:       # imagenet
+    # imagenet
+    if args.dataset in ['imagenet']:       
         model.load_official_weights()
         print("###########################this is a test###########################")
         for epoch in range(args.epoch):
             criterion = nn.CrossEntropyLoss()
-
             test(args, epoch, model, testloader, criterion)
 
-    else:    # cifar10
-        
+    # cifar10
+    else:    
         # load model checkpoint
         if args.resume:
             assert os.path.isdir(os.path.join(args.model_dir)), 'Error: no checkpoint directory found!'
@@ -43,6 +41,7 @@ def main(args):
         else:
             criterion = nn.CrossEntropyLoss()
             optimizer = optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9, weight_decay=5e-4)
+            model.requires_grad = True
             if args.lr_scheduler:
                 lr_milestones = [int(i) for i in args.lr_milestones]
                 scheduler = MultiStepLR(optimizer, milestones=lr_milestones, gamma=args.gamma)
@@ -52,6 +51,7 @@ def main(args):
                 test(args, epoch, model, testloader, criterion)
                 if args.lr_scheduler:
                     scheduler.step()
+                    
             stop = time()
             print("Model: {} - Total Time: {} sec".format(args.model_dir, str(stop-start)))
 

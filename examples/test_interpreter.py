@@ -9,8 +9,8 @@ import argparse
 import numpy as np
 import matplotlib.image as mpimg
 
-from ialgebra.utils.utils_main import read_config
 from ialgebra.operators import *
+from ialgebra.utils.utils_main import read_config
 from ialgebra.utils.utils_model import load_model
 from ialgebra.utils.utils_operation import ialgebra_interpreter, save_attribution_map, vis_saliancy_map
 

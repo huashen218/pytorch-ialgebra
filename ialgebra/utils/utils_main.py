@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import cv2
 import sys
 import yaml
 import torch
@@ -7,9 +7,8 @@ import torch.nn as nn
 import numpy as np
 
 
-
-map = {'int': torch.int, 'float': torch.float,
-       'double': torch.double, 'long': torch.long}
+# map = {'int': torch.int, 'float': torch.float,
+#        'double': torch.double, 'long': torch.long}
 
 _cuda = torch.cuda.is_available()
 
@@ -34,138 +33,89 @@ def read_config(config_path):
 
 
 
-# def to_tensor(x, dtype=None, device=None, copy=False):
-#     if x is None:
-#         return None
-#     _dtype = map[dtype] if isinstance(dtype, str) else dtype
-#     _device = device.device if torch.is_tensor(device) else device
-
-#     if isinstance(x, list):
-#         try:
-#             x = torch.stack(x)
-#         except Exception:
-#             pass
-#     try:
-#         x = torch.as_tensor(x, dtype=_dtype, device=_device)
-#     except Exception:
-#         print('tensor: ', x)
-#         raise ValueError()
-#     if _device is None and _cuda and not x.is_cuda:
-#         x = x.cuda()
-#     return x.contiguous()
-
-
-# def to_numpy(x):
-#     if x is None:
-#         return None
-#     if type(x).__module__ == np.__name__:
-#         return x
-#     if torch.is_tensor(x):
-#         return (x.cpu() if x.is_cuda else x).detach().numpy()
-#     return np.array(x)
-
-
-def to_tensor(x, device):
-    return x.to(device) if isinstance(x, torch.Tensor) else torch.Tensor(x).to(device)
-
-def to_numpy(x):
-    return x if isinstance(x, np.ndarray) else (x.cpu() if x.is_cuda else x).detach().numpy()
 
 
 
 
 
 
-
-def normalize_map(maps):
-    shape = maps.shape
-    n = len(maps)
-    flatten_map = maps.reshape((n, -1))
-    m_min, m_max = np.min(flatten_map, axis=1, keepdims=True), np.percentile(flatten_map, 99, axis=1, keepdims=True)
-    normed_maps = np.clip((flatten_map - m_min) / (m_max - m_min), 0, 1)
-    return normed_maps.reshape(shape)
-
+# def normalize_map(maps):
+#     shape = maps.shape
+#     n = len(maps)
+#     flatten_map = maps.reshape((n, -1))
+#     m_min, m_max = np.min(flatten_map, axis=1, keepdims=True), np.percentile(flatten_map, 99, axis=1, keepdims=True)
+#     normed_maps = np.clip((flatten_map - m_min) / (m_max - m_min), 0, 1)
+#     return normed_maps.reshape(shape)
 
 
+# # to revise
+# def normalize_map(maps, map_size = None):
+#     """
+#     Normalize the map
 
-# to revise
-def normalize_map(maps, map_size = None):
-    """
-    Normalize the map
+#     Inputs: 2d or 3d numpy map;
 
-    Inputs: 2d or 3d numpy map;
-
-    Outputs:
-    3D normalized map [0,1]
-    """
-
-    shape = maps.shape
-    n = len(maps)
-    # # 3D map
-    # if n == 3:
-    #     if maps.shape[0] != 3:
-    #         maps = maps.transpose(2, 0, 1)  # maps shape [3, map_size, map_size]
+#     Outputs:
+#     3D normalized map [0,1]
+#     """
+#     shape = maps.shape
+#     n = len(maps)
+#     # # 3D map
+#     # if n == 3:
+#     #     if maps.shape[0] != 3:
+#     #         maps = maps.transpose(2, 0, 1)  # maps shape [3, map_size, map_size]
 
 
-    # elif n == 2:
-    # #
+#     # elif n == 2:
+#     # #
+
+#     flatten_map = maps.reshape((n, -1))
+#     m_min, m_max = np.min(flatten_map, axis=1, keepdims=True), np.percentile(flatten_map, 99, axis=1, keepdims=True)
+#     normed_maps = np.clip((flatten_map - m_min) / (m_max - m_min), 0, 1)
+#     return normed_maps.reshape(shape)
 
 
-    flatten_map = maps.reshape((n, -1))
-    m_min, m_max = np.min(flatten_map, axis=1, keepdims=True), np.percentile(flatten_map, 99, axis=1, keepdims=True)
-    normed_maps = np.clip((flatten_map - m_min) / (m_max - m_min), 0, 1)
-    return normed_maps.reshape(shape)
-
-
-
-
-
-def plot(img_2d, img, in_size = 224):
-    img_2d = np.sum(img, axis=0)
-    span = abs(np.percentile(img_2d, percentile=99))
-    vmin = -span
-    vmax = span
-    img_2d = np.clip((img_2d - vmin) / (vmax - vmin), -1, 1)
-    imshow(img_2d)
+# def plot(img_2d, img, in_size = 224):
+#     img_2d = np.sum(img, axis=0)
+#     span = abs(np.percentile(img_2d, percentile=99))
+#     vmin = -span
+#     vmax = span
+#     img_2d = np.clip((img_2d - vmin) / (vmax - vmin), -1, 1)
+#     imshow(img_2d)
     
-    map = np.uint8(255 * cv2.resize(np.repeat(img_2d, 3, 0), (in_size, in_size), interpolation=cv2.INTER_LINEAR))
-    map = cv2.applyColorMap(map, cv2.COLORMAP_JET)
-    imshow((img[:,:,::-1]+map[:,:,::-1]/255) / (img[:,:,::-1]+map[:,:,::-1]/255).max())
+#     map = np.uint8(255 * cv2.resize(np.repeat(img_2d, 3, 0), (in_size, in_size), interpolation=cv2.INTER_LINEAR))
+#     map = cv2.applyColorMap(map, cv2.COLORMAP_JET)
+#     imshow((img[:,:,::-1]+map[:,:,::-1]/255) / (img[:,:,::-1]+map[:,:,::-1]/255).max())
     
+# def imagenet_resize_postfn(grad):
+#     grad = grad.abs().max(1, keepdim=True)[0]
+#     grad = F.avg_pool2d(grad, 4).squeeze(1)
+#     shape = grad.shape
+#     grad = grad.view(len(grad), -1)
+#     grad_min = grad.min(1, keepdim=True)[0]
+#     grad = grad - grad_min
+#     grad_max = grad.max(1, keepdim=True)[0]
+#     grad = grad / torch.max(grad_max, torch.tensor([1e-8], device='cuda'))
+#     return grad.view(*shape)
 
 
+# def save_as_gray_image(img, filename, percentile=99):
+#     img_2d = np.sum(img, axis=0)
+#     span = abs(np.percentile(img_2d, percentile))
+#     vmin = -span
+#     vmax = span
+#     img_2d = np.clip((img_2d - vmin) / (vmax - vmin), -1, 1)
+#     cv2.imwrite(filename, img_2d * 255)
 
-def imagenet_resize_postfn(grad):
-    grad = grad.abs().max(1, keepdim=True)[0]
-    grad = F.avg_pool2d(grad, 4).squeeze(1)
-    shape = grad.shape
-    grad = grad.view(len(grad), -1)
-    grad_min = grad.min(1, keepdim=True)[0]
-    grad = grad - grad_min
-    grad_max = grad.max(1, keepdim=True)[0]
-    grad = grad / torch.max(grad_max, torch.tensor([1e-8], device='cuda'))
-    return grad.view(*shape)
+#     return
 
 
-
-
-def save_as_gray_image(img, filename, percentile=99):
-    img_2d = np.sum(img, axis=0)
-    span = abs(np.percentile(img_2d, percentile))
-    vmin = -span
-    vmax = span
-    img_2d = np.clip((img_2d - vmin) / (vmax - vmin), -1, 1)
-    cv2.imwrite(filename, img_2d * 255)
-
-    return
-
-
-def save_cam_image(img, mask, filename):
-    heatmap = cv2.applyColorMap(np.uint8(255*mask), cv2.COLORMAP_JET)
-    heatmap = np.float32(heatmap) / 255
-    cam = heatmap + np.float32(img)
-    cam = cam / np.max(cam)
-    cam = np.uint8(255 * cam)
-#     cv2.imwrite(filename, cam)
+# def save_cam_image(img, mask, filename):
+#     heatmap = cv2.applyColorMap(np.uint8(255*mask), cv2.COLORMAP_JET)
+#     heatmap = np.float32(heatmap) / 255
+#     cam = heatmap + np.float32(img)
+#     cam = cam / np.max(cam)
+#     cam = np.uint8(255 * cam)
+# #     cv2.imwrite(filename, cam)
 
 
