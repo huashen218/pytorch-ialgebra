@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim import Adam
 
+from ialgebra.interpreters.interpreter import *
 
 class _GaussianBlur(nn.Module):
     def __init__(self, ksize, sigma, num_channels=3):

@@ -20,7 +20,7 @@ class Compositer(object):
     """
 
 
-    def __init__(self, inputs_tup,  models_tup, identity_name, identity_kwargs, operators_tup, operators_kwargs_tup):
+    def __init__(self, inputs_tup=None,  models_tup=None, identity_name=None, identity_kwargs=None, operators_tup=None, operators_kwargs_tup=None):
         # parsing inputs
         self.inputs_tup = inputs_tup
 

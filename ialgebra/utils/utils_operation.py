@@ -4,9 +4,6 @@ import visdom
 import matplotlib.image as mpimg
 from matplotlib.pyplot import imshow
 
-from ialgebra.benchmark.model_utils import load_pretrained_model
-
-
 
 # parse declarative query to ialgebra_name
 name2operator = {
@@ -17,11 +14,17 @@ name2operator = {
 }
 
 name2compositer = {
-    'proj_slct': 'compositer.proj_slct',
+    'slct_proj': 'compositer.slct_proj',
+    'slct_join': 'compositer.slct_join',
+    'slct_anjo': 'compositer.slct_anjo',
+    'proj_join': 'compositer.proj_join',
+    'proj_anjo': 'compositer.proj_anjo',
+    'slct_proj_join': 'compositer.slct_proj_join',
+    'slct_proj_anjo': 'compositer.slct_proj_anjo',
 }
 
 
-def ialgebra_interpreter(inputs_tup,  models_tup， identity_name, identity_kwargs=None, operators_tup, operators_kwargs_tup, compositer):
+def ialgebra_interpreter(inputs_tup,  models_tup, identity_name, operators_tup, operators_kwargs_tup, compositer, identity_kwargs=None):
     """
     *Function*: 
     operate saliency_maps to meet user demands
@@ -47,26 +50,14 @@ def ialgebra_interpreter(inputs_tup,  models_tup， identity_name, identity_kwar
     ialgebra_name = operators_tup  #todo
 
     if compositer:
-        _ialgebra_class = getattr(__import__('operations'), name2compositer[ialgebra_name]) 
+        _ialgebra_class = getattr(getattr(__import__("ialgebra"), "operations"), name2compositer[ialgebra_name]) 
     else:
-        _ialgebra_class = getattr(__import__('operations'), name2operator[ialgebra_name]) 
+        _ialgebra_class = getattr(getattr(__import__("ialgebra"), "operations"), name2operator[ialgebra_name]) 
     
-    ialgebra_map, ialgebra_mapimg = _ialgebra_class(inputs_tup,  models_tup， identity_name, identity_kwargs, operators_tup, operators_kwargs_tup)
+    ialgebra_map, ialgebra_mapimg = _ialgebra_class(inputs_tup,  models_tup, identity_name, operators_tup, operators_kwargs_tup, identity_kwargs)
     # to revise
 
     return ialgebra_map, ialgebra_mapimg
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -81,12 +72,15 @@ def vis_saliancy_map(ialgebra_map, ialgebra_mapimg, vis_method = 'imshow', vis_s
     """
 
     if vis_method == 'imshow':
-        for k in range(len(ialgebra_mapimg)):
-            imshow(ialgebra_mapimg[k][:,:,::-1])
+        if len(ialgebra_mapimg.shape) == 3:
+            imshow(ialgebra_mapimg.transpose(1,2,0))   # imshow (H, W, C)
+        elif len(ialgebra_mapimg.shape) == 4:
+            for k in range(len(ialgebra_mapimg)):
+                imshow(ialgebra_mapimg[k][:,:,::-1])
 
     elif vis_method == 'visdom':
         vis = visdom.Visdom(env='ialgebra_visualization', port=vis_sport)
-        vis.images([ialgebra_map, ialgebra_mapimg], win='iAlgebra_maps', opts=dict(title='iAlgebra_mapimg'))
+        # vis.images([ialgebra_map, ialgebra_mapimg], win='iAlgebra_maps', opts=dict(title='iAlgebra_mapimg'))
 
 
 def save_attribution_map(ialgebra_map, ialgebra_mapimg, save_dir, save_ialgebra_map = False):
@@ -106,10 +100,16 @@ def save_attribution_map(ialgebra_map, ialgebra_mapimg, save_dir, save_ialgebra_
     np.savez(os.path.join(save_dir, 'ialgebra_maps.npz'), **save_dobj)
 
     # save figures
-    for k in range(len(ialgebra_mapimg)):
-        mpimg.imsave(os.path.join(save_dir, 'ialgebra_mapimg_{}.png'.format(k)), np.transpose(ialgebra_mapimg[k], (1, 2, 0)))
+    if len(ialgebra_mapimg.shape) == 3:
+        mpimg.imsave(os.path.join(save_dir, 'ialgebra_mapimg_None.png'), np.transpose(ialgebra_mapimg, (1, 2, 0)))
+    elif len(ialgebra_mapimg.shape) == 4:
+        for k in range(len(ialgebra_mapimg)):
+            mpimg.imsave(os.path.join(save_dir, 'ialgebra_mapimg_{}.png'.format(k)), np.transpose(ialgebra_mapimg[k], (1, 2, 0)))
     
     if save_ialgebra_map:
-        for k in range(len(ialgebra_map)):
-            mpimg.imsave(os.path.join(save_dir, 'ialgebra_map_{}.png'.format(k)), np.transpose(ialgebra_map[k], (1, 2, 0)))
+        if len(ialgebra_mapimg.shape) == 3:
+            mpimg.imsave(os.path.join(save_dir, 'ialgebra_map_None.png'), np.transpose(ialgebra_map, (1, 2, 0)))
+        elif len(ialgebra_mapimg.shape) == 4:
+            for k in range(len(ialgebra_map)):
+                mpimg.imsave(os.path.join(save_dir, 'ialgebra_map_{}.png'.format(k)), np.transpose(ialgebra_map[k], (1, 2, 0)))
     

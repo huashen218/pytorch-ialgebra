@@ -1,6 +1,11 @@
+import cv2
+import torch
 import numpy as np
-from interpreters import *
+import torch.nn.functional as F
 
+from ialgebra.interpreters import * 
+from ialgebra.utils.utils_model import load_pretrained_model
+from ialgebra.utils.utils_data import to_numpy
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -11,6 +16,11 @@ name2identity = {
     'guided_backprop_smoothgrad': 'GuidedBackpropSmoothGrad.GuidedBackpropSmoothGrad',
     'mask': 'mask.Mask',
     'smoothgrad': 'smoothgrad.SmoothGrad'
+}
+
+map_size = {
+    'cifar10': 32,
+    'imagenet': 224
 }
 
 
@@ -30,12 +40,10 @@ def generate_identity(bx, by, model_kwargs, identity_name, identity_kwargs):
     :identity_mapimg: int_map+img (might not use): shape = [B*C*H*W], type = numpy.ndarray 
     """
     pretrained_model = load_pretrained_model(**model_kwargs)
-    _identity_class = getattr(__import__('interpreters'), name2identity[identity_name]) 
+    _identity_class = getattr(getattr(__import__("ialgebra"), "interpreters"), name2identity[identity_name])
     # identity_map, identity_mapimg = _identity_class(pretrained_model, bx, by, device)       ## initialize the interpreter (pretrained_model, bx, by, device, preprocess_fn = preprocess_fn, resize_postfn = resize_postfn, generate_map = generate_maps, batch_size = 1)
     identity_interpreter = _identity_class(pretrained_model, bx, by, device)       ## initialize the interpreter (pretrained_model, bx, by, device, preprocess_fn = preprocess_fn, resize_postfn = resize_postfn, generate_map = generate_maps, batch_size = 1)
     return identity_interpreter
-
-
 
 
 
@@ -52,24 +60,6 @@ def resize_postfn(grad):
     return grad.view(*shape)
 
 
-
-# from [112, 112] -> [3, 224, 224] map
-def generate_map(grad, img):
-    mask = grad.cpu().detach().numpy()
-    mask = mask.squeeze(0)  
-    
-    smap =  normalize_map(mask[None])[0]
-    smap = np.uint8(255 * cv2.resize(np.repeat(smap, 3, 0), (224, 224), interpolation=cv2.INTER_LINEAR))
-    heatmap = cv2.applyColorMap(smap, cv2.COLORMAP_JET)
-    heatmap = np.float32(heatmap) / 255
-    cam = heatmap + np.float32(img)
-    cam = cam / np.max(cam)
-    # imshow(cam[:,:,::-1])
-    # cv2.imwrite(save_dir, cam*255)
-    return heatmap, cam
-
-
-
 def normalize_map(maps):
     shape = maps.shape
     n = len(maps)
@@ -77,6 +67,26 @@ def normalize_map(maps):
     m_min, m_max = np.min(flatten_map, axis=1, keepdims=True), np.percentile(flatten_map, 99, axis=1, keepdims=True)
     normed_maps = np.clip((flatten_map - m_min) / (m_max - m_min), 0, 1)
     return normed_maps.reshape(shape)
+
+
+
+# from [112, 112] -> [3, 224, 224] map
+def generate_map(grad, img, dataset):
+    mask = grad.cpu().detach().numpy()
+    mask = mask.squeeze(0)  
+    
+    smap =  normalize_map(mask[None])[0]
+    smap = np.uint8(255 * cv2.resize(np.repeat(smap, 3, 0), (map_size[dataset], map_size[dataset]), interpolation=cv2.INTER_LINEAR))
+    heatmap = cv2.applyColorMap(smap, cv2.COLORMAP_JET)
+    heatmap = np.float32(heatmap) / 255   # heatmap_shape = [map_size, map_size, 3]
+    heatmap = heatmap[:,:,::-1].transpose(2,0,1)
+    cam = heatmap + np.float32(to_numpy(img.squeeze(0)))  # img_shape = [3, map_size, map_size]
+    cam = cam / np.max(cam)
+    # imshow(cam[:,:,::-1])
+    # cv2.imwrite(save_dir, cam*255)
+    return heatmap, cam
+
+
 
 
 

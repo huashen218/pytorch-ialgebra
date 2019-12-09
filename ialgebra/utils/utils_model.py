@@ -77,8 +77,7 @@ def load_pretrained_model(model_name, layer, dataset, model_dir):
     Return:
     :return: model
     """
-    # _class = getattr(__import__('models'), name2class[model_name])
-    _class = getattr('models', name2class[model_name])
+    _class = getattr(getattr(__import__("ialgebra"), "models"), name2class[model_name])
     if layer is not None:
         model = _class(name=model_name, dataset=dataset, layer=layer)
     else:
@@ -86,6 +85,7 @@ def load_pretrained_model(model_name, layer, dataset, model_dir):
     # load pretrained weights
     assert os.path.isdir(os.path.join(model_dir)), 'Error: no checkpoint directory found!'
     model_save_dir = os.path.join(model_dir, 'ckpt_{}_{}_{}.t7'.format(dataset, model_name, layer))
+    print("model_save_dir:", model_save_dir)
     model.load_state_dict(torch.load(model_save_dir))
     model = model.to(device)
     model.eval()

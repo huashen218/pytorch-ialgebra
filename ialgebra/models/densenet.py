@@ -13,9 +13,9 @@ fc_dim_config = {
 }
 
 class DenseNet(Model):
-    def __init__(self, name=None, dataset=None, layer = 4, **kwargs):
-        super(DenseNet, self).__init__(name = name, dataset = dataset, fc_depth=1, conv_dim = fc_dim_config[dataset][layer-1], avgpool_ctrl = False)
-        self.layer = layer
+    def __init__(self, name=None, dataset=None, layer = '4', **kwargs):
+        super(DenseNet, self).__init__(name = name, dataset = dataset, fc_depth=1, conv_dim = fc_dim_config[dataset][int(layer)-1], avgpool_ctrl = False)
+        self.layer = int(layer)
         self.name = name
         _model = models.__dict__[self.name](num_classes=self.num_classes)
 

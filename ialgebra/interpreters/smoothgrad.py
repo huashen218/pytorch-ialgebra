@@ -4,10 +4,10 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 from torch.nn import functional as F
-from interpreters.interpreter_utils import resize_postfn, generate_map
-from benchmark.data_utils import preprocess_fn
 
-
+from ialgebra.utils.utils_interpreter import resize_postfn, generate_map
+from ialgebra.utils.utils_data import preprocess_fn
+from ialgebra.interpreters.interpreter import *
 
 class SmoothGrad(Interpreter):
 

@@ -15,31 +15,16 @@ from ialgebra.utils.utils_model import load_model
 from ialgebra.utils.utils_operation import ialgebra_interpreter, save_attribution_map, vis_saliancy_map
 
 
-def main(config_path):
-    """Functions:
-    1) parse user config;
-    2) invode ialgebra interpreter
-    3) visualize the 'img+saliency_map'
+def main(config):
 
-    Inputs: 
-    :config_path of declarative_query.yaml
-      :input: [B*C*H*W]
-      :model: pretrained_model
-    """
-    config = read_config(config_path)
+  MODEL_PATH = '/home/hqs5468/workspace/Codes/projects/pytorch-ialgebra/checkpoints/'
+  model_dir = MODEL_PATH + 'ckpt_' + config.dataset + '_' + config.model_name + '_' + config.layer + '.t7'
+  print("model_dir:", model_dir)
+  model_params = {'model_name': config.model_name, 'layer': config.layer, 'dataset': config.dataset, 'model_dir': model_dir}
 
-    # step1: parsing
-    """
-    parsing: 
-    """
 
-    inputs = config['input_lists']
-    input_size = inputs.shape(3)
-    models = config['model_lists']
-    identity = config['interpreters']['identity']
-    declarative_query = config['interpreters']['declarative_query']
-    save_dir = config['save_dir'] #todo parse declarative_query to operators and compositions
-    operators = []
+
+
 
     # step2: invoke ialgebra interpreter
     compositer = False if len(operators) == 1 else True
@@ -53,6 +38,13 @@ def main(config_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Welcome to i-Algebra: An Interactive DNN Interpretater")
-    parser.add_argument('--config', '-c', required=False, dest='config_path', default='./declarative_query_example.yaml')
+    # parser.add_argument('--config', '-c', required=False, dest='config_path', default='./declarative_query_example.yaml')
+
+    parser.add_argument('--model_name', dest='model_name')
+    parser.add_argument('--layer', dest='layer', default=None)
+    parser.add_argument('--dataset', dest='dataset')
+
+
+
     args = parser.parse_args()
     main(args.config_path)

@@ -26,9 +26,9 @@ cfg = {
 }
 
 class VGG(Model):
-    def __init__(self, name=None, dataset=None, layer=5, **kwargs):
-        super(VGG, self).__init__(name = name, dataset = dataset, fc_depth=3, conv_dim = fc_dim_config[dataset][layer-1], fc_dim = 4096, **kwargs)
-        self.layer = layer
+    def __init__(self, name=None, dataset=None, layer='5', **kwargs):
+        super(VGG, self).__init__(name = name, dataset = dataset, fc_depth=3, conv_dim = fc_dim_config[dataset][int(layer)-1], fc_dim = 4096, **kwargs)
+        self.layer = int(layer)
         self.name = name
         self.dataset = dataset
         self.interval = intervals[self.name]

@@ -18,9 +18,9 @@ fc_dim_config = {
 }
 
 class ResNet(Model):
-    def __init__(self, name=None, dataset=None, layer = 4, **kwargs):
-        super(ResNet, self).__init__(name = name, dataset = dataset, fc_depth=1, conv_dim = fc_dim_config[name][dataset][layer-1])
-        self.layer = layer
+    def __init__(self, name=None, dataset=None, layer = '4', **kwargs):
+        super(ResNet, self).__init__(name = name, dataset = dataset, fc_depth=1, conv_dim = fc_dim_config[name][dataset][int(layer)-1])
+        self.layer = int(layer)
         self.name = name
         self.dataset = dataset
         _model = models.__dict__[self.name](num_classes=self.num_classes)

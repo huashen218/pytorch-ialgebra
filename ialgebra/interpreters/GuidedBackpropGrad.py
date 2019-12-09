@@ -1,6 +1,5 @@
 import torch
-from interpreters.gradsaliency import VanillaGrad
-
+from ialgebra.interpreters.gradsaliency import VanillaGrad
 
 class GuidedBackpropGrad(VanillaGrad):
 

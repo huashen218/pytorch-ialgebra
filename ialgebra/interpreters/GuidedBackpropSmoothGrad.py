@@ -1,6 +1,5 @@
-from interpreters.smoothgrad import SmoothGrad
-from interpreters.GuidedBackpropGrad import GuidedBackpropReLU
-
+from ialgebra.interpreters.smoothgrad import SmoothGrad
+from ialgebra.interpreters.GuidedBackpropGrad import GuidedBackpropReLU
 
 class GuidedBackpropSmoothGrad(SmoothGrad):
 

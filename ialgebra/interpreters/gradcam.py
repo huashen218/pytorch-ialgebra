@@ -4,7 +4,7 @@ import torch
 import torch.autograd as autograd
 import torch.nn as nn
 import torch.nn.functional as F
-
+from ialgebra.interpreters.interpreter import *
 
 class FeatureExtractor(object):
 
