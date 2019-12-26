@@ -19,19 +19,35 @@ class Compositer(object):
     :opt_map+img (might not use): shape = [B*C*H*W], type = numpy.ndarray 
     """
 
-    def __init__(self, identity_name=None, dataset=None,  target_layer=None, device=None):
+
+    def __init__(self, inputs_tup=None,  models_tup=None, identity_name=None, identity_kwargs=None, operators_tup=None, operators_kwargs_tup=None):
+        # parsing inputs
+        self.inputs_tup = inputs_tup
+
+        # parsing models
+        self.model_kwargs = models_tup[0]         # (model1_kwargs, model2_kwargs, ..., modeln_kwargs)
+        # self.model = load_pretrained_model(**self.model_kwargs)
+
         # parsing identity
         self.identity = identity_name
-        self.dataset = dataset
-        self.target_layer = target_layer
-        self._identity_class = getattr(getattr(__import__("ialgebra"), "interpreters"), name2identity[self.identity])
-        # self.identity_interpreter = self._identity_class(self.model, self.dataset)
+        self.identity_kwargs = identity_kwargs
+
+        # parsing operator
+        self.operator = operators_tup[0]                  # (operator1, operator2 ,..., operatorn)
+        self.operators_kwargs = operators_kwargs_tup[0]   # (operator1_kwargs, operator2_kwargs ,..., operatorn_kwargs)
+
+        self.identity_interpreter = generate_identity(self.bx, self.by, self.model_kwargs, self.identity, self.identity_kwargs)
+
+
+
+
+
 
 
 
     ###### TWO Pairs ######
     # select * from f(x) where w
-    def slct_proj(self,  bx, by, model, region):
+    def slct_proj(self, region):
         """
         *Function*
         :combinition of 'selection' and 'projection':
@@ -60,7 +76,7 @@ class Compositer(object):
 
 
     # select * from f(x) join (select * from f(x'))
-    def slct_join(self,  bx, by, model, region1, region2):
+    def slct_join(self, region1, region2):
         """
         *Function*
         :combinition of 'selection' and 'join':
@@ -106,7 +122,7 @@ class Compositer(object):
 
 
     # select * from f(x) left join (select * from f(x'))
-    def slct_anjo(self,  bx, by, model, region1, region2 = None, model_diff= False):
+    def slct_anjo(self, region1, region2 = None, model_diff= False):
         """
         *Function*
         :combinition of 'selection' and 'anti-join':
@@ -184,7 +200,7 @@ class Compositer(object):
 
 
     # select * from f(x1)  join  (select * from f(x2) join (select * from f(x3)))
-    def proj_join(self, bx, by, model):
+    def proj_join(self):
         """
         *Function*
         :combinition of 'projection' and 'join':
@@ -211,7 +227,7 @@ class Compositer(object):
         heatmapimg2 = heatmapimg2 / np.max(heatmapimg2)
         return heatmap, heatmapimg1, heatmapimg2
 
-    def proj_anjo(self, bx, by, model):
+    def proj_anjo(self):
         """
         *Function*: 
         :combinition of 'projection' and 'anti-join', similar to operator 'anti-join' but layer is controled by 'projection'
@@ -273,7 +289,7 @@ class Compositer(object):
 
 
     ###### THREE Pairs ######
-    def slct_proj_join(self,  bx, by, model, region1, region2):
+    def slct_proj_join(self, region1, region2):
         """
         *Function*
         :combinition of 'selection', 'projection' and 'join', similar to compositer 'slct_join'
@@ -318,7 +334,7 @@ class Compositer(object):
         return heatmap, heatmapimg1, heatmapimg2
 
 
-    def slct_proj_anjo(self,  bx, by, model, region1, region2 = None, model_diff= False):
+    def slct_proj_anjo(self, region1, region2 = None, model_diff= False):
         """
         *Function*
         :combinition of 'selection', 'projection' and 'anti-join', similar to compositer 'slct_anjo'

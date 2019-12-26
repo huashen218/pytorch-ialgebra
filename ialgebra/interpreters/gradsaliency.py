@@ -24,7 +24,8 @@ class GradSaliency(Interpreter):
 
 
 class VanillaGrad(Interpreter):
-    def __init__(self, pretrained_model):
+    def __init__(self, pretrained_model=None, dataset=None):
+        super(VanillaGrad, self).__init__(pretrained_model = pretrained_model, dataset=dataset)
         self.pretrained_model = pretrained_model
         self.features = pretrained_model.features
         self.pretrained_model.eval()

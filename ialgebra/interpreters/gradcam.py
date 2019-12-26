@@ -4,7 +4,10 @@ import torch
 import torch.autograd as autograd
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 from ialgebra.interpreters.interpreter import *
+from ialgebra.utils.utils_data import to_numpy, to_tensor
+
 
 class FeatureExtractor(object):
 
@@ -37,21 +40,21 @@ class FeatureExtractor(object):
 
 
 
+
 class GradCam(Interpreter):
 
-    def __init__(self, target_layer_names):
-        super(GradCam, self).__init__()
+    def __init__(self, pretrained_model=None, dataset=None, index=None,  target_layer_names = '4'):
+        super(GradCam, self).__init__(pretrained_model = pretrained_model, dataset=dataset)
         self.extractor = FeatureExtractor(self.pretrained_model, target_layer_names)
+        self.index= index
 
+    # def get_default_gradcam_config(self):
+    #     return dict(batch_size=1, target_layer_names = '3')
 
-    def get_default_gradcam_config(self):
-        return dict(batch_size=1, target_layer_names = '3')
+    def interpret_per_batch(self, bxn, byn):
 
-
-    def interpret_per_batch(self,  index=None):
-
-        features, output = self.extractor(self.bx)
-        index = np.argmax(output.data.cpu().numpy()) if index is None else index
+        features, output = self.extractor(bxn)
+        index = np.argmax(output.data.cpu().numpy()) if self.index is None else self.index
 
         one_hot = np.zeros((1, output.size()[-1]), dtype=np.float32)
         one_hot[0][index] = 1
@@ -63,7 +66,6 @@ class GradCam(Interpreter):
         one_hot.backward(retain_graph=True)
 
         grads = self.extractor.get_gradients()[-1].data.cpu().numpy()
-
         target = features[-1].data.cpu().numpy()[0, :]
         weights = np.mean(grads, axis=(2, 3))[0, :]
         cam = np.ones(target.shape[1:], dtype=np.float32)
@@ -71,12 +73,7 @@ class GradCam(Interpreter):
         for i, w in enumerate(weights):
             cam += w * target[i, :, :]
 
-        cam = np.maximum(cam, 0)
-        cam = cv2.resize(cam, (224, 224))
-        cam = cam - np.min(cam)
-        cam = cam / np.max(cam)
-
-        cam = self.resize_postfn(cam)
-        cam, camimg = self.generate_map(cam, self.bx)
+        cam = self.resize_postfn(to_tensor(cam).unsqueeze(0))
+        cam, camimg = self.generate_map(cam, bxn, self.dataset)
 
         return cam, camimg

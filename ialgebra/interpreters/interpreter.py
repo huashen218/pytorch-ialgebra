@@ -6,7 +6,7 @@ from ialgebra.utils.utils_interpreter import resize_postfn, generate_map
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class Interpreter(object):
-    def __init__(self, pretrained_model=None,  dataset=None):
+    def __init__(self, pretrained_model=None,  dataset=None, target_layer=None):
 
         super(Interpreter, self).__init__()
         self.pretrained_model = pretrained_model
@@ -16,6 +16,7 @@ class Interpreter(object):
         self.device = device
         self.resize_postfn = resize_postfn
         self.generate_map = generate_map
+        self.target_layer = target_layer
 
     def __call__(self, bx, by, batch_size=None):
         return self.interpret(bx, by, batch_size=batch_size)

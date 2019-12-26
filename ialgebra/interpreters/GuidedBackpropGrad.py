@@ -1,11 +1,14 @@
 import torch
 from ialgebra.interpreters.gradsaliency import VanillaGrad
 
+
+
 class GuidedBackpropGrad(VanillaGrad):
 
-    def __init__(self):
-        super(GuidedBackpropGrad, self).__init__()
-
+    def __init__(self, pretrained_model=None, dataset=None):
+        super(GuidedBackpropGrad, self).__init__(pretrained_model = pretrained_model, dataset=dataset)
+        self.pretrained_model = pretrained_model
+        self.pretrained_model.eval()
         for idx, module in self.features._modules.items():
             if module.__class__.__name__ is 'ReLU':
                 self.features._modules[idx] = GuidedBackpropReLU()

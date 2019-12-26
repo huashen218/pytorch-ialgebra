@@ -47,11 +47,12 @@ def generate_identity(bx, by, model_kwargs, identity_name, identity_kwargs):
 
 
 
-# [3, 224, 224] -> [112, 112]
+# [N, 3, 224, 224] -> [N, 112, 112]
 def resize_postfn(grad):
-    grad = grad.abs().max(1, keepdim=True)[0]
-    grad = F.avg_pool2d(grad, 4).squeeze(1)
-    shape = grad.shape
+    grad = grad.unsqueeze(0) if len(grad.size()) == 3 else grad   # ensure len(grad.size()) == 4
+    grad = grad.abs().max(1, keepdim=True)[0] if grad.size(1)==3 else grad     # grad shape = [1, 3, 32, 32]
+    grad = F.avg_pool2d(grad, 4).squeeze(1)        # grad shape = [1, 1, 32, 32]
+    shape = grad.shape                             # grad shape = [1, 8, 8]
     grad = grad.view(len(grad), -1)
     grad_min = grad.min(1, keepdim=True)[0]
     grad = grad - grad_min
