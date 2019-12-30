@@ -19,6 +19,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def main(config):
 
+    # parsing
     dataset = config.dataset
     model_name = config.model_name
     layer = config.layer

@@ -1,31 +1,51 @@
-input_lists:
+# 
+data:
   # default: testset
-  input1:
-    dataset: 'cifar10'  
-    idx: 10
-  input2:
-    dataset: 'cifar10'
-    idx: 20
+  name: 'cifar10'
+  subname: 'test'  # 'train' or 'test'
+  idx_list: [10,20]
+  data_path: '/home/hqs5468/workspace/Codes/projects/pytorch-ialgebra/data/'
+  batch_size: 128
 
-
-model_lists:
+models:
   # options = ['lenet', 'resnet18', 'resnet50', 'vgg19', 'densenet121']
   # note: 'lenet' is only for mnist. others for 'cifar10' and 'imagenet'
   model1:
-    'resnet18'
-  layer:
-    '4'
+    name: 'vgg19'
+    layer: '3'
+    model_path: '/home/hqs5468/workspace/Codes/projects/pytorch-ialgebra/checkpoints/'
+  # model2:
+  #   name: 'resnet18'
+  #   layer: '3'
+  #   model_path: '/home/hqs5468/workspace/Codes/projects/pytorch-ialgebra/checkpoints/'
 
 
-
-interpreters:
-  identity:
-    'gradient_saliency'
-  declarative_query:
-    'from f1(x1) where [16, 20, 20, 40]'  # projection
-    'from f1(x1) selece l3'               # selection
+identity:
+  identity_name: 'grad_cam'  # ['grad_cam', 'grad_saliency', 'guided_backprop_grad', 'guided_backprop_smoothgrad', 'mask', 'smoothgrad']
+  identity_kwarg: None
 
 
-save_dir:
+ialgebra:
+  operator:
+    name: 'selection' # ['projection', 'selection', 'join', 'antijoin']
+    kwarg: {'region': [10, 20, 20, 30]}  
+
+  # compositer:
+  #   name: 'slct_proj' # ['slct_proj', 'slct_join', 'slct_anjo', 'proj_join', 'proj_anjo', 'slct_proj_join', 'slct_proj_anjo']
+  #   kwarg: {}
+
+
+save_path:
   './results'
-    
+
+
+
+
+#   declarative_query:
+#     'from f1(x1) where [16, 20, 20, 40]'  # projection
+#     'from f1(x1) selece l3'               # selection
+
+
+
+# --dataset 'cifar10' --model_name 'vgg19' --layer '4' --identity_name 'smoothgrad' --operator_name 'join'
+

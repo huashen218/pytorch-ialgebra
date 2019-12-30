@@ -7,14 +7,14 @@ Welcome to Pytorch-iAlgebra's documentation!
 ============================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
+   example
+   interpreters
+   models
+   operations
+   utils
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

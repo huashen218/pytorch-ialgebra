@@ -35,7 +35,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name='sampleproject',  # Required
+    name='pytorch-ialgebra',  # Required
 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
@@ -43,12 +43,15 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.3.1',  # Required
+    version='1.0.0',  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description='A sample Python project',  # Optional
+    description='pytorch-ialgebra',  # Optional
+
+
+
 
     # This is an optional longer description of your project that represents
     # the body of text which users will see when they visit PyPI.
@@ -80,11 +83,11 @@ setup(
 
     # This should be your name or the name of the organization which owns the
     # project.
-    author='The Python Packaging Authority',  # Optional
+    author='Hua Shen',  # Optional
 
     # This should be a valid email address corresponding to the author listed
     # above.
-    author_email='pypa-dev@googlegroups.com',  # Optional
+    author_email='huashen218@gmail.com',  # Optional
 
     # Classifiers help users find your project by categorizing it.
     #
@@ -107,8 +110,8 @@ setup(
         # that you indicate whether you support Python 2, Python 3 or both.
         # These classifiers are *not* checked by 'pip install'. See instead
         # 'python_requires' below.
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
+        # 'Programming Language :: Python :: 2',
+        # 'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
@@ -175,7 +178,7 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files
     #
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
-    data_files=[('my_data', ['data/data_file'])],  # Optional
+    # data_files=[('my_data', ['data'])],  # Optional
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
