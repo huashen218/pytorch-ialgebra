@@ -8,7 +8,7 @@ Welcome to Pytorch-iAlgebra's documentation!
 
 .. toctree::
    :maxdepth: 3
-   :caption: Contents:
+   :caption: Document of Pytorch-iAlgebra
 
    example
    interpreters

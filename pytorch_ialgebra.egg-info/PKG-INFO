@@ -1,16 +1,129 @@
 Metadata-Version: 2.1
 Name: pytorch-ialgebra
-Version: 1.0.0
-Summary: pytorch-ialgebra
-Home-page: https://github.com/pypa/sampleproject
-Author: Hua Shen
-Author-email: huashen218@gmail.com
+Version: 1.0.1
+Summary: demo
+Home-page: UNKNOWN
+Author: 
 License: UNKNOWN
 Project-URL: Bug Reports, https://github.com/pypa/sampleproject/issues
 Project-URL: Funding, https://donate.pypi.org
 Project-URL: Say Thanks!, http://saythanks.io/to/example
 Project-URL: Source, https://github.com/pypa/sampleproject/
-Description: # A sample Python project
+Description: <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+        
+        # Pytorch iAlgebra
+        
+        **[Document]()|[Paper]()|[References]()**
+        
+        *Pytorch iAlgebra* is an interactive interpretation library for deep learning on [Pytorch](https://pytorch.org).
+        
+        
+        Pytorch iAlgebra provides an interactive frame for interpreting a group of deep leanring models using a set of interpretation methods.
+        
+        ----
+        **iAlgebra Operations**
+        ----
+        
+        **Operators**
+        
+        *Identity*
+        
+        
+        $$
+        [\phi(x)]_{i}=\frac{1}{d} \sum_{k=0}^{d-1} \mathbb{E}_{I_{k}}\left[f\left(x_{I_{k} \cup\{i\}}\right)-f\left(x_{I_{k}}\right)\right]
+        $$
+        
+        
+        *Projection*
+        
+        $$
+        \left[\Pi_{w}(x)\right]_{i}=\left\{\begin{array}{cc}{\frac{1}{|w|} \sum_{k=0}^{|w|-1} \mathbb{E}_{I_{k}}\left[f\left(x_{I_{k} \cup\{i\}}\right)-f\left(x_{I_{k}}\right)\right]} & {i \in w} \\ {0} & {i \notin w}\end{array}\right.
+        $$
+        
+        
+        *Selection*
+        $$
+        \left[\sigma_{l}(x)\right]_{i}=\left[\phi\left(x ; \bar{x}, f_{l}\right)\right]_{i}
+        $$
+        
+        *Join*
+        
+        $$
+        \left[x \bowtie x^{\prime}\right]_{i}=\frac{1}{2}\left([\phi(x ; \bar{x}, f)]_{i}+\left[\phi\left(x^{\prime} ; \bar{x}, f\right)\right]_{i}\right)
+        $$
+        
+        
+        *Anti-Join*
+        
+        $$
+        \left[x \diamond x^{\prime}\right]_{i}=\left(\left[\phi\left(x ; x^{\prime}, f\right)\right]_{i},\left[\phi\left(x^{\prime} ; x, f\right)\right]_{i}\right)
+        $$
+        
+        
+        ----
+        **Supportive DNN and Interpretation Models**
+        ----
+        
+        **DNN Models**
+        
+        Model Performance on dataset *Mnist*
+        
+        | Dataset     |                Models  |         |
+        | ----------- | -----------    | -----------     |
+        | Mnist       | LeNet-L1  | LeNet-L2   |
+        | Accuracy    | 98.866%        |99.020%          |
+        
+        
+        Model Performance on dataset *Cifar10*
+        
+        | Dataset     |                Models  |         |
+        | ----------- | -----------    | -----------     |
+        | Cifar10     | Vgg19 -L1      | Vgg19-L2        |
+        | Accuracy    | 98.866%        | 99.020%          |
+        
+        
+        
+        **Interpretation Methods**
+        
+        
+        In detail, we implement the following interpretation methods as the *identity* in Pytorch-iAlgebra.
+        
+        * **GradSaliency** from Simonyan *et al.*:[Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps](https://arxiv.org/pdf/1312.6034.pdf) (CVPR 2013)
+        
+        * **SmoothGrad** from Smilkov *et al.*:[SmoothGrad: removing noise by adding noise](https://arxiv.org/pdf/1706.03825.pdf)
+        
+        * **Mask** from Fong *et al.*:[Interpretable Explanations of Black Boxes by Meaningful Perturbation](https://arxiv.org/pdf/1704.03296.pdf) (ICCV 2017)
+        
+        * **GradCam** from Selvaraju *et al.*: [Grad-CAM:
+        Visual Explanations from Deep Networks via Gradient-based Localization](https://arxiv.org/abs/1610.02391) (ICCV 2017)
+        
+        * **GuidedBackpropGrad** from Springenberg *et al.*:[Striving for Simplicity: The All Convolutional Net](https://arxiv.org/pdf/1412.6806.pdf) (ICLR 2015)
+        
+        <!-- * **GuidedBackpropSmoothGrad** -->
+        
+        ------
+        
+        
+        **Installation**
+        ----
+        Library dependencies for the *Pytorch-iAlgebra*. Before installation, you need to install these with
+        
+        ```python
+        $ pip install -r requirements.txt
+        ```
+        
+        Then *Pytorch-iAlgebra* can be installed by:
+        
+        ```python
+        $ pip install pytorch-ialgebra
+        ```
+        
+        
+        
+        
+        
+        
+        <!-- 
         
         A sample project that exists as an aid to the [Python Packaging User
         Guide][packaging guide]'s [Tutorial on Packaging and Distributing
@@ -46,7 +159,9 @@ Description: # A sample Python project
         [src]: https://github.com/pypa/sampleproject
         [rst]: http://docutils.sourceforge.net/rst.html
         [md]: https://tools.ietf.org/html/rfc7764#section-3.5 "CommonMark variant"
-        [md use]: https://packaging.python.org/specifications/core-metadata/#description-content-type-optional
+        [md use]: https://packaging.python.org/specifications/core-metadata/#description-content-type-optional -->
+        
+        
         
 Keywords: sample setuptools development
 Platform: UNKNOWN
@@ -61,5 +176,5 @@ Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Requires-Python: >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4
 Description-Content-Type: text/markdown
-Provides-Extra: test
 Provides-Extra: dev
+Provides-Extra: test

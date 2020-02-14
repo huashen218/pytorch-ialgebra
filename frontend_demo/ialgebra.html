@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- <link rel="stylesheet" type="text/css" href="./css/mystyle.css"> -->
+		<style>
+		div {
+			font-weight: bold;
+			font-family: Palatino;
+			width: 800px;
+			/* padding-left: 50px; */
+			/* margin-left: 450px; */
+			text-align: center;
+		}
+		#sub {
+			background-color: lightgrey;
+			width: 250px;
+			height: 30px;
+			color: red;
+			font-weight: bold;
+		}
+		body {
+			background-color: ghostwhite;
+		}
+		table {
+		  font-family: arial, sans-serif;
+		  border-collapse: collapse;
+		  width: 60%;
+		}
+		
+		td, th {
+		  border: 1px solid #dddddd;
+		  text-align: left;
+		  padding: 8px;
+		}
+		
+		tr:nth-child(even) {
+		  background-color: #dddddd;
+		}
+		</style>
+
+
+
+
+		<!-- <script src="./js/functions.js"></script> -->
+		<script>
+		function Dataset() {
+			var index, text, dataset, datatype;
+			index = document.getElementById("idx").value;  
+			dataset = document.getElementById("Dataset").value;  
+			datatype = document.getElementById("Datatype").value;
+			if (isNaN(index) || index < 1 || index > 50000) {
+			  alert("Input not valid");
+			  return false;
+			  } 
+			else {
+			  text = "<p style= 'color: blue;'><strong>Your Data Choice:</strong></br>"
+				  + "<strong>Dataset</strong>:  " + dataset
+				  + "</br> <strong>Dataset Type</strong>: " + datatype
+				  + "</br> <strong>Index</strong>: " + index + "</p>";
+			}
+			document.getElementById("imageidx").innerHTML = text;
+		  }
+
+		function SelectModel() {
+			var model;
+			model = document.querySelector('input[name="model"]:checked').value;
+			document.getElementById("dnnmodel").innerHTML = model;
+			if (model=="LeNet") {
+				text ="<p style='font-weight:bold; text-align:left;'>Select LeNet Layer:</p>"+
+					  "<select id='layer' onchange='SelectLayer(this.value)'>" +
+					  "<option value='Layer1'>Layer1</option>" + 
+					  "<option value='Layer2'>Layer2</option>" +
+					  "</select></br>"
+			  document.getElementById("dnnmodel").innerHTML = text;
+			}
+			else if (model=="Vgg19") {
+				text ="<p style='font-weight:bold; text-align:left;'>Select Vgg19 Layer:</p>"+
+					  "<select id='layer' onchange='SelectLayer(this.value)'>" +
+					  "<option value='Layer1'>Layer1</option>" + 
+					  "<option value='Layer2'>Layer2</option>" +
+					  "<option value='Layer3'>Layer3</option>" +
+					  "<option value='Layer4'>Layer4</option>" +
+					  "<option value='Layer5'>Layer5</option>" +
+					  "</select></br>"
+			  document.getElementById("dnnmodel").innerHTML = text;
+			}
+			else if (model=="ResNet18") {
+				text ="<p style='font-weight:bold; text-align:left;'>Select ResNet18 Layer:</p>"+
+					  "<select id='layer' onchange='SelectLayer(this.value)'>" +
+					  "<option value='Layer1'>Layer1</option>" + 
+					  "<option value='Layer2'>Layer2</option>" +
+					  "<option value='Layer3'>Layer3</option>" +
+					  "<option value='Layer4'>Layer4</option>" +
+					  "</select></br>"
+			  document.getElementById("dnnmodel").innerHTML = text;
+			}
+			else if (model=="ResNet50") {
+				text ="<p style='font-weight:bold; text-align:left;'>Select ResNet50 Layer:</p>"+
+					  "<select id='layer' onchange='SelectLayer(this.value)'>" +
+					  "<option value='Layer1'>Layer1</option>" + 
+					  "<option value='Layer2'>Layer2</option>" +
+					  "<option value='Layer3'>Layer3</option>" +
+					  "<option value='Layer4'>Layer4</option>" +
+					  "</select></br>"
+			  document.getElementById("dnnmodel").innerHTML = text;
+			}
+			else if (model=="DenseNet121") {
+				text ="<p style='font-weight:bold; text-align:left;'>Select DenseNet121 Layer:</p>"+
+					  "<select id='layer' onchange='SelectLayer(this.value)'>" +
+					  "<option value='Layer1'>Layer1</option>" + 
+					  "<option value='Layer2'>Layer2</option>" +
+					  "<option value='Layer3'>Layer3</option>" +
+					  "<option value='Layer4'>Layer4</option>" +
+					  "</select></br>"
+			  document.getElementById("dnnmodel").innerHTML = text; 
+			}
+		}
+
+		function SelectLayer() {
+			var model, layer, text;
+			model = document.querySelector('input[name="model"]:checked').value;
+			layer = document.getElementById("layer").value;
+			text = "<p style='text-align:left; color:blue '><strong>Your Model Choice:</strong><br/>" +
+				  "<strong>Model</strong>: " + model + "<br/>" +
+				  "<strong>Layer</strong>: " + layer+"</p>";
+			document.getElementById("allmodel").innerHTML = text;
+		}
+
+		function DeclarativeQuery() {
+			  var x = document.forms["myForm"]["query"].value;
+			  var delarative = document.getElementById("declarequery").value;
+			  var text, string;
+			  // var img = document.getElementById("myImage").src = "./img/fly_dream.jpg";
+			  if (x == "") {
+				  alert("declarative query must be filled out");
+				  return false;
+			  }
+			  else{
+				  text = "<p style= 'color: blue;'><strong>Your Declarative Query:</strong></br> " + x;
+			  }
+			  document.getElementById("declarequery").innerHTML = text;
+		  
+		  
+			// get src link here
+			function loadServer(){
+				var xhttp = new XMLHttpRequest();
+				var model, layer, dataset, datatype, index, send_text;
+		  
+				xhttp.onreadystatechange = function() {
+				  if (this.readyState == 4 && this.status == 200) {
+					//   string = bin2string(this.responseText);
+					// document.getElementById("server").innerHTML = "string";
+					// document.getElementById("server").innerHTML = "string";
+					}
+				}
+				
+				dataset = document.getElementById("Dataset").value;  
+				datatype = document.getElementById("Datatype").value;
+				index = document.getElementById("idx").value;  
+				model = document.querySelector('input[name="model"]:checked').value;
+				layer = document.getElementById("layer").value;
+				declarative_query = document.forms["myForm"]["query"].value;
+				send_text = dataset+"|"+datatype+"|"+index+"|"+model+"|"+layer+"|"+declarative_query;
+				// document.getElementById("server").innerHTML = send_text;
+				
+				xhttp.open("POST", "ialgebra.html", true);
+				xhttp.send(send_text);
+				// document.getElementById("myImage").src = "https://github.com/huashen218/i-Algebra-database/blob/master/example_adv.png?raw=true";
+				document.getElementById("myImage").src = "./img/fly_dream.jpg";
+
+				// var string = String.fromCharCode(xhttp.responseText);
+				// var string = bin2string(xhttp.responseText);
+				// var string = String.fromCharCode.apply(null, xhttp.responseText);
+				// var string = String.fromCharCode.apply(null, xhttp.responseText).split('').map(char => char.charCodeAt(0) <= 127 && char.charCodeAt(0) >= 32 ? char : '').join('');
+				// var tring = String.fromCharCode(xhttp.responseText);
+				// document.getElementById("server").innerHTML = "string";
+				// document.getElementById("myImage").src = string;
+			};
+			loadServer();
+		}
+
+		function bin2string(array){
+			var result = "";
+			for(var i = 0; i < array.length; ++i){
+				result+= (String.fromCharCode(array[i]));
+			}
+			return result;
+		}
+		</script>
+
+
+		<meta charset="utf-8">
+		<title>Welcome to i-Algebra</title>
+	</head>
+	
+
+	<body>
+	<div><span style="background-color:#40B3DF;color:#ffffff; font-weight:bold; font-family:Palatino; font-size: 30px; width: 800px;position:relative; text-align:center;"> i-Algebra for DNNs Interactive Interpretation </span></div>
+	<p>Welcome to iAlgebra! iAlgebra is a first-of-its-kind interactive framework for interpreting DNN models. At its core is a library of atomic, composable operators, 
+	which can explain model behaviors at varying input granularity and during different inference stages.<br/>
+	For more instrunctions, please refer to the our <em>Pytorch-iAlgebra Python Library</em>: <a href="https://anonymous.4open.science/r/1684d602-17bd-432e-b59d-80bfd1dca5f7/">Pytorch-iAlgebra</a> .</p>
+	
+	
+<!-- 
+
+	<p>iAlgebra consists of five <strong>Operators</strong>:</p>
+	<table>
+	  <tr>
+	    <th>Operator</th>
+	    <th>Description</th> 
+	  </tr>
+	  <tr>
+	    <td>Identity</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Projection</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Selection</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Join</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Anti-Join</td>
+	    <td>Description</td> 
+	  </tr>
+	 </table>
+
+
+	<p>In iAlgebra, we incorperation five interpretation methods as <strong>Identities</strong>:</p>
+	<table style="width:70%">
+	  <tr>
+	    <th>Identity</th>
+	    <th>Description</th> 
+	  </tr>
+	  <tr>
+	    <td>GradSaliency</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>SmoothGrad</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Mask</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>GradCam</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>GuidedBackpropGrad</td>
+	    <td>Description</td> 
+	  </tr>
+	 </table>
+	
+
+	<p>Currently, Operators can be composed into seven <strong>Compositors</strong>:</p>
+	<table>
+	  <tr>
+	    <th>Composition</th>
+	    <th>Description</th> 
+	  </tr>
+	  <tr>
+	    <td>Slct_Proj</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Slct_Join</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Slct_Anjo</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Proj_Join</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Proj_Anjo</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Slct_Proj_Join</td>
+	    <td>Description</td> 
+	  </tr>
+	  <tr>
+	    <td>Slct_Proj_Anjo</td>
+	    <td>Description</td> 
+	  </tr>
+	 </table>
+	<br/>
+	<hr/>	 -->
+
+
+<!-- =================================================================================== -->
+	<h2 style="text-align: center">Datasets</h2>
+	<strong>Choose Dataset:</strong></br>
+	<select id="Dataset">
+		<option value="Mnist">Mnist</option>
+		<option value="Cifar10">Cifar10</option>
+		<option value="Imagenet">ImageNet</option>
+	</select></br>
+	</br>
+	
+	<strong>Choose Your Dataset:</strong></br>
+	<select id="Datatype">
+		<option value="Trainset" name="job">Trainset</option>
+		<option value="Testset" selected="selected" name="job">Testset</option>
+	</select></br>
+	</br>
+	
+	<strong>Please Input Index of Image:</strong>
+	<input type="text" name="idx" id="idx"/>
+	<button type="button" style="font-weight:bold;text-align:center; width: 80px; height: 20px; color: black;font-weight:bold;font-family:Palatino; font-size: 15px;" onclick="Dataset()">Submit</button>
+	<p id="imageidx"></p>
+	<hr/>
+
+
+
+<!-- =================================================================================== -->
+	<h2 style="text-align: center">Deep Learning Models</h2>
+	<div>
+	<div style="font-weight:bold;text-align:left;">Select Image Classifiers </div>
+	<br/>
+	
+	<input type="radio" id="LeNet" name="model" value="LeNet">LeNet
+	<input type="radio" id="Vgg19" name="model" value="Vgg19" >Vgg19
+	<input type="radio" id="ResNet18" name="model" value="ResNet18" checked="checked">ResNet18
+	<input type="radio" id="ResNet50" name="model" value="ResNet50" >ResNet50
+	<input type="radio" id="DenseNet121" name="model" value="DenseNet121" >DenseNet121
+	<br/>
+	<br/>
+	<button type="button" style="font-weight:bold;text-align:center; width: 180px; height: 20px; color: black;font-weight:bold;font-family:Palatino; font-size: 15px;" onclick="SelectModel()">Submit Model</button>
+	<br/>
+	<p id="dnnmodel"></p>
+	<br/>
+	<p id="allmodel"></p>
+	<hr/>
+
+
+
+<!-- =================================================================================== -->
+	<h2 style="text-align: center">Declarative Query</h2>
+	<form name="myForm">
+	<strong>Please Input i-Algebra Declarative Query Below:</strong></br>
+	<textarea cols="100" rows="5" name="query" id="query"></textarea></br>
+	<button type="button" style="font-weight:bold;text-align:center; width: 80px; height: 20px; color: black;font-weight:bold;font-family:Palatino; font-size: 15px;" onclick="DeclarativeQuery()">Excute</button>
+	<p id="declarequery"></p>
+	</form>
+	<hr/>
+
+
+
+<!-- =================================================================================== -->
+	<h2 style="text-align: center">iAlgebra Interpretation</h2>
+	<p id="server"></p>
+	<img id="myImage" style="width: 600px;">
+	<hr/>
+
+	</body>
+</html>

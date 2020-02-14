@@ -1,6 +1,20 @@
-# For neural network examples
+
+# for neural network examples
 torch
 torchvision
+numpy
+collections
+sys
+os
+time
+matplotlib
+visdom
+
 
 # For declarative query 
-pyyaml 
+pyyaml
+
+
+# for visualization
+cv2
+
