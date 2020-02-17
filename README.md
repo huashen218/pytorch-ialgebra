@@ -13,7 +13,14 @@ Pytorch iAlgebra provides an interactive frame for interpreting a group of deep 
 **iAlgebra Operations**
 ----
 
+
+
+
+
 **Operators**
+
+
+
 
 *Identity*
 
