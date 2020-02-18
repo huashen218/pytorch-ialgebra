@@ -48,7 +48,7 @@ $ python setup.py install
 ***Pytorch-iAlgebra* Examples**
 ----
 
-*Pytorch-iAlgebra* can be used in two way:
+*Pytorch-iAlgebra* can be used in two ways:
 
 >**Usage1: Web-based Example**
 
