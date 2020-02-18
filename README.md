@@ -23,7 +23,7 @@ Before installing *Pytorch-iAlgebra*, the following libraries are required:
 
 The `requirements.txt` file lists all python libraries that *Pytorch-iAlgebra* depends on, you can install them by using:
 
-```python
+```console
 $ pip install -r requirements.txt
 ```
 
@@ -34,11 +34,11 @@ $ pip install -r requirements.txt
 The *Pytorch-iAlgebra* can be installed:
 
 using `pip`:
-```python
+```console
 $ pip install pytorch-ialgebra
 ```
 using `source`:
-```python
+```console
 $ python setup.py install
 ```
 
@@ -52,8 +52,7 @@ $ python setup.py install
 
 >**Web-based Example**
 
-![Demo of iAlgebra]('../frontend_demo/ialgebra_ui_demo.png' "Demo of iAlgebra")
-
+![Demo of iAlgebra](https://github.com/huashen218/pytorch-ialgebra/blob/master/frontend_demo/ialgebra_ui_demo.png?raw=true "Demo of iAlgebra")
 
 >**Programming-based Example**
 
