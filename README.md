@@ -52,7 +52,7 @@ $ python setup.py install
 
 >**Web-based Example**
 
-![Demo of iAlgebra](https://github.com/huashen218/pytorch-ialgebra/blob/master/frontend_demo/ialgebra_ui_demo.png?raw=true "Demo of iAlgebra"){width=50%}
+![Demo of iAlgebra](https://github.com/huashen218/pytorch-ialgebra/blob/master/frontend_demo/ialgebra_ui_demo.png?raw=true "Demo of iAlgebra"){:width="100px"}
 
 >**Programming-based Example**
 
