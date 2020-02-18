@@ -1,5 +1,11 @@
 
 # for neural network examples
+argparse
+http.server
+threding
+webbrowser
+
+cv2
 torch
 torchvision
 numpy

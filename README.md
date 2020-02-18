@@ -1,118 +1,76 @@
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<!-- <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script> -->
 
-# Pytorch iAlgebra
+# Pytorch-iAlgebra
 
 **[Document]()|[Paper]()|[References]()**
 
-*Pytorch iAlgebra* is an interactive interpretation library for deep learning on [Pytorch](https://pytorch.org).
+*Pytorch-iAlgebra* is an interactive interpretation library for deep learning on [Pytorch](https://pytorch.org).
 
 
-Pytorch iAlgebra provides an interactive frame for interpreting a group of deep leanring models using a set of interpretation methods.
+*Pytorch-iAlgebra* implements i-Algebra with a User Interface (UI) for user interaction and a Pytorch Interpretable Deep Learning System (IDLS), which integrates a set of interpertation models, for processing interactive interpretation queries. Details can be found in paper:
 
-----
-**iAlgebra Operations**
-----
+> * i-Algebra: Towards Interactive Interpretability of Neural Nets
 
-
-
-
-
-**Operators**
-
-
-
-
-*Identity*
-
-
-$$
-[\phi(x)]_{i}=\frac{1}{d} \sum_{k=0}^{d-1} \mathbb{E}_{I_{k}}\left[f\left(x_{I_{k} \cup\{i\}}\right)-f\left(x_{I_{k}}\right)\right]
-$$
-
-
-*Projection*
-
-$$
-\left[\Pi_{w}(x)\right]_{i}=\left\{\begin{array}{cc}{\frac{1}{|w|} \sum_{k=0}^{|w|-1} \mathbb{E}_{I_{k}}\left[f\left(x_{I_{k} \cup\{i\}}\right)-f\left(x_{I_{k}}\right)\right]} & {i \in w} \\ {0} & {i \notin w}\end{array}\right.
-$$
-
-
-*Selection*
-$$
-\left[\sigma_{l}(x)\right]_{i}=\left[\phi\left(x ; \bar{x}, f_{l}\right)\right]_{i}
-$$
-
-*Join*
-
-$$
-\left[x \bowtie x^{\prime}\right]_{i}=\frac{1}{2}\left([\phi(x ; \bar{x}, f)]_{i}+\left[\phi\left(x^{\prime} ; \bar{x}, f\right)\right]_{i}\right)
-$$
-
-
-*Anti-Join*
-
-$$
-\left[x \diamond x^{\prime}\right]_{i}=\left(\left[\phi\left(x ; x^{\prime}, f\right)\right]_{i},\left[\phi\left(x^{\prime} ; x, f\right)\right]_{i}\right)
-$$
-
-
-----
-**Supportive DNN and Interpretation Models**
-----
-
-**DNN Models**
-
-Model Performance on dataset *Mnist*
-
-| Dataset     |                Models  |         |
-| ----------- | -----------    | -----------     |
-| Mnist       | LeNet-L1  | LeNet-L2   |
-| Accuracy    | 98.866%        |99.020%          |
-
-
-Model Performance on dataset *Cifar10*
-
-| Dataset     |                Models  |         |
-| ----------- | -----------    | -----------     |
-| Cifar10     | Vgg19 -L1      | Vgg19-L2        |
-| Accuracy    | 98.866%        | 99.020%          |
-
-
-
-**Interpretation Methods**
-
-
-In detail, we implement the following interpretation methods as the *identity* in Pytorch-iAlgebra.
-
-* **GradSaliency** from Simonyan *et al.*:[Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps](https://arxiv.org/pdf/1312.6034.pdf) (CVPR 2013)
-
-* **SmoothGrad** from Smilkov *et al.*:[SmoothGrad: removing noise by adding noise](https://arxiv.org/pdf/1706.03825.pdf)
-
-* **Mask** from Fong *et al.*:[Interpretable Explanations of Black Boxes by Meaningful Perturbation](https://arxiv.org/pdf/1704.03296.pdf) (ICCV 2017)
-
-* **GradCam** from Selvaraju *et al.*: [Grad-CAM:
-Visual Explanations from Deep Networks via Gradient-based Localization](https://arxiv.org/abs/1610.02391) (ICCV 2017)
-
-* **GuidedBackpropGrad** from Springenberg *et al.*:[Striving for Simplicity: The All Convolutional Net](https://arxiv.org/pdf/1412.6806.pdf) (ICLR 2015)
-
-<!-- * **GuidedBackpropSmoothGrad** -->
 
 ------
-
-
-**Installation**
+**Requirements**
 ----
-Library dependencies for the *Pytorch-iAlgebra*. Before installation, you need to install these with
+Before installing *Pytorch-iAlgebra*, the following libraries are required:
+
+* Python3
+* Pytorch
+* etc.
+
+The `requirements.txt` file lists all python libraries that *Pytorch-iAlgebra* depends on, you can install them by using:
 
 ```python
 $ pip install -r requirements.txt
 ```
 
-Then *Pytorch-iAlgebra* can be installed by:
+------
+***Pytorch-iAlgebra* Installation**
+----
 
+The *Pytorch-iAlgebra* can be installed:
+
+using `pip`:
 ```python
 $ pip install pytorch-ialgebra
 ```
+using `source`:
+```python
+$ python setup.py install
+```
+
+
+
+----
+***Pytorch-iAlgebra* Introduction**
+----
+
+*Pytorch-iAlgebra* can be used in two way:
+
+>**Web-based Example**
+
+![Demo of iAlgebra]('../frontend_demo/ialgebra_ui_demo.png' "Demo of iAlgebra")
+
+
+>**Programming-based Example**
+
+----
+**Citing this Work**
+----
+
+When using *Pytorch-iAlgebra*, please use the following citation:
+```
+@misc{ialgebra2020,
+    title={i-Algebra: Towards Interactive Interpretability of Neural Nets},
+    year={2020}
+}
+```
+
+<!-- * **GuidedBackpropSmoothGrad** -->
+
 
 
 
