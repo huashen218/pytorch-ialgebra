@@ -2,7 +2,7 @@
 
 # Pytorch-iAlgebra
 
-**[Document]()|[Paper]()|[References]()**
+<!-- **[Document]()|[Paper]()|[References]()** -->
 
 *Pytorch-iAlgebra* is an interactive interpretation library for deep learning on [Pytorch](https://pytorch.org).
 
@@ -50,7 +50,7 @@ $ python setup.py install
 
 *Pytorch-iAlgebra* can be used in two way:
 
->**Web-based Example**
+>**Usage1: Web-based Example**
 
 Run the server by 
 ```console
@@ -58,14 +58,29 @@ $ cd pytorch-ialgebra/frontend_demo
 $ python server.py -s "http://your-server-address.edu" -p port -f "./ialgebra.html"
 ```
 
-Then you can open the User Interface at: `http://your-server-address.edu:port/./ialgebra.html`. 
+Then you can open the User Interface at: `http://your-server-address.edu:port/./ialgebra.html`, and make interactive interpretaiton.
 
 ![Demo of iAlgebra](https://github.com/huashen218/pytorch-ialgebra/blob/master/frontend_demo/ialgebra_ui_demo.png?raw=true "Demo of iAlgebra")
 
 
+>**Usage2: Programming-based Example**
 
+```python
+from ialgebra.operators import *
+from ialgebra.utils.utils_model import load_model
+from ialgebra.utils.utils_operation import ialgebra_interpreter, save_attribution_map, vis_saliancy_map
 
->**Programming-based Example**
+# define operator
+_operator_class = Operator(identity_name, dataset, device = device)
+operator = getattr(_operator_class, operator_name)
+
+# interpretation
+heatmap, heatmapimg = operator(bx, by, model_list)
+
+# visualize and save image
+vis_saliancy_map(heatmap, heatmapimg)
+save_attribution_map(heatmap, heatmapimg, './')
+```
 
 ----
 **Citing this Work**
