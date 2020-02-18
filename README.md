@@ -52,7 +52,17 @@ $ python setup.py install
 
 >**Web-based Example**
 
-![Demo of iAlgebra](https://github.com/huashen218/pytorch-ialgebra/blob/master/frontend_demo/ialgebra_ui_demo.png?raw=true | width=100)
+Run the server by 
+```console
+$ cd pytorch-ialgebra/frontend_demo
+$ python server.py -s "http://your-server-address.edu" -p port -f "./ialgebra.html"
+```
+
+Then you can open the User Interface at: `http://your-server-address.edu:port/./ialgebra.html`. 
+
+![Demo of iAlgebra](https://github.com/huashen218/pytorch-ialgebra/blob/master/frontend_demo/ialgebra_ui_demo.png?raw=true "Demo of iAlgebra")
+
+
 
 
 >**Programming-based Example**
