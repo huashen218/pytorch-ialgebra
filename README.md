@@ -55,7 +55,7 @@ $ python setup.py install
 Run the server by 
 ```console
 $ cd pytorch-ialgebra/frontend_demo
-$ python server.py -s "http://your-server-address.edu" -p port -f "./ialgebra.html"
+$ python server.py -s "http://your-server-address.edu" -p 8890 -f "./ialgebra.html"
 ```
 
 Then you can open the User Interface at: `http://your-server-address.edu:port/./ialgebra.html`, and make interactive interpretaiton.
