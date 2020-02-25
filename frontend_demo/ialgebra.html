@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+<!-- ========================================== HEAD - SECTION 1: CCS SETTINGS ============================================== -->
 		<!-- <link rel="stylesheet" type="text/css" href="./css/mystyle.css"> -->
 		<style>
 		div {
@@ -39,12 +40,10 @@
 		</style>
 
 
-
-
-
-
+<!-- ========================================== HEAD - SECTION 2: JAVASCRIPT SETTINGS ============================================== -->
 		<!-- <script src="./js/functions.js"></script> -->
 		<script>
+
 		function Dataset() {
 			var index, text, dataset, datatype;
 			index = document.getElementById("idx").value;  
@@ -62,6 +61,8 @@
 			}
 			document.getElementById("imageidx").innerHTML = text;
 		  }
+
+
 
 		function SelectModel() {
 			var model;
@@ -118,6 +119,16 @@
 			}
 		}
 
+
+		function SelectIdentity() {
+			var identity;
+			identity = document.querySelector('input[name="identity"]:checked').value;
+			text = "<p style='text-align:left; color:blue '><strong>Your Identity Choice:</strong><br/>" +
+				  "<strong>Identity</strong>: " + identity + "</p>" ;
+			document.getElementById("interpreter").innerHTML = text;
+		}
+
+
 		function SelectLayer() {
 			var model, layer, text;
 			model = document.querySelector('input[name="model"]:checked').value;
@@ -127,6 +138,8 @@
 				  "<strong>Layer</strong>: " + layer+"</p>";
 			document.getElementById("allmodel").innerHTML = text;
 		}
+
+
 
 		function DeclarativeQuery() {
 			  var x = document.forms["myForm"]["query"].value;
@@ -150,8 +163,8 @@
 		  
 				xhttp.onreadystatechange = function() {
 				  if (this.readyState == 4 && this.status == 200) {
-					//   string = bin2string(this.responseText);
-					// document.getElementById("server").innerHTML = "string";
+					// string = bin2string(this.responseText);
+					// document.getElementById("server").innerHTML = string;
 					// document.getElementById("server").innerHTML = "string";
 					}
 				}
@@ -161,26 +174,28 @@
 				index = document.getElementById("idx").value;  
 				model = document.querySelector('input[name="model"]:checked').value;
 				layer = document.getElementById("layer").value;
+				identity = document.querySelector('input[name="identity"]:checked').value;
 				declarative_query = document.forms["myForm"]["query"].value;
-				send_text = dataset+"|"+datatype+"|"+index+"|"+model+"|"+layer+"|"+declarative_query;
+				send_text = dataset+"|"+datatype+"|"+index+"|"+model+"|"+layer+"|"+identity+"|"+declarative_query;
 				// document.getElementById("server").innerHTML = send_text;
 				
 				xhttp.open("POST", "ialgebra.html", true);
 				xhttp.send(send_text);
 				// document.getElementById("myImage").src = "https://github.com/huashen218/i-Algebra-database/blob/master/example_adv.png?raw=true";
-				document.getElementById("myImage").src = "./img/fly_dream.jpg";
+				document.getElementById("myImage").src = "./ialgebra_ui_demo.png";
 
+				// document.getElementById("myImage").src = String(xhttp.responseText);
 				// var string = String.fromCharCode(xhttp.responseText);
 				// var string = bin2string(xhttp.responseText);
 				// var string = String.fromCharCode.apply(null, xhttp.responseText);
 				// var string = String.fromCharCode.apply(null, xhttp.responseText).split('').map(char => char.charCodeAt(0) <= 127 && char.charCodeAt(0) >= 32 ? char : '').join('');
-				// var tring = String.fromCharCode(xhttp.responseText);
-				// document.getElementById("server").innerHTML = "string";
+				// var string = String.fromCharCode(xhttp.responseText);
+				// document.getElementById("server").innerHTML = string;
 				// document.getElementById("myImage").src = string;
 			};
 			loadServer();
 		}
-[]
+
 		function bin2string(array){
 			var result = "";
 			for(var i = 0; i < array.length; ++i){
@@ -188,121 +203,27 @@
 			}
 			return result;
 		}
+
+
 		</script>
 
-
+<!-- ========================================== HEAD - SECTION 3: TAG TITLE ============================================== -->
 		<meta charset="utf-8">
 		<title>Welcome to i-Algebra</title>
 	</head>
-	
+
+
 
 	<body>
+<!-- ========================================== BODY - SECTION 1: TITLE ============================================== -->
 	<div><span style="font-weight:bold; font-family:Palatino; font-size: 28px; width: 1000px; position:relative; text-align:center;"> i-Algebra: An Interactive Framework for Interpreting DNNs </span></div>
 	<p>Welcome to iAlgebra! iAlgebra is a first-of-its-kind interactive framework for interpreting DNN models. At its core is a library of atomic, composable operators, 
 	which can explain model behaviors at varying input granularity and during different inference stages.<br/>
 	For more instrunctions, please refer to the our <em>Pytorch-iAlgebra Python Library</em>: <a href="https://anonymous.4open.science/r/1684d602-17bd-432e-b59d-80bfd1dca5f7/">Pytorch-iAlgebra</a> .</p>
 	
-	
-<!-- 
-
-	<p>iAlgebra consists of five <strong>Operators</strong>:</p>
-	<table>
-	  <tr>
-	    <th>Operator</th>
-	    <th>Description</th> 
-	  </tr>
-	  <tr>
-	    <td>Identity</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Projection</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Selection</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Join</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Anti-Join</td>
-	    <td>Description</td> 
-	  </tr>
-	 </table>
 
 
-	<p>In iAlgebra, we incorperation five interpretation methods as <strong>Identities</strong>:</p>
-	<table style="width:70%">
-	  <tr>
-	    <th>Identity</th>
-	    <th>Description</th> 
-	  </tr>
-	  <tr>
-	    <td>GradSaliency</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>SmoothGrad</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Mask</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>GradCam</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>GuidedBackpropGrad</td>
-	    <td>Description</td> 
-	  </tr>
-	 </table>
-	
-
-	<p>Currently, Operators can be composed into seven <strong>Compositors</strong>:</p>
-	<table>
-	  <tr>
-	    <th>Composition</th>
-	    <th>Description</th> 
-	  </tr>
-	  <tr>
-	    <td>Slct_Proj</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Slct_Join</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Slct_Anjo</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Proj_Join</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Proj_Anjo</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Slct_Proj_Join</td>
-	    <td>Description</td> 
-	  </tr>
-	  <tr>
-	    <td>Slct_Proj_Anjo</td>
-	    <td>Description</td> 
-	  </tr>
-	 </table>
-	<br/>
-	<hr/>	 -->
-
-
-<!-- =================================================================================== -->
+<!-- ========================================== BODY - SECTION 2: DATASET ============================================== -->
 	<h2 style="text-align: center">Datasets</h2>
 	<strong>Choose Dataset:</strong></br>
 	<select id="Dataset">
@@ -314,8 +235,8 @@
 	
 	<strong>Choose Your Dataset:</strong></br>
 	<select id="Datatype">
-		<option value="Trainset" name="job">Trainset</option>
-		<option value="Testset" selected="selected" name="job">Testset</option>
+		<option value="train" name="job">train</option>
+		<option value="test" selected="selected" name="job">test</option>
 	</select></br>
 	</br>
 	
@@ -327,7 +248,7 @@
 
 
 
-<!-- =================================================================================== -->
+<!-- ========================================== BODY - SECTION 3: MODELS ============================================== -->
 	<h2 style="text-align: center">Deep Learning Models</h2>
 	<div>
 	<div style="font-weight:bold;text-align:left;">Select Image Classifiers </div>
@@ -347,9 +268,29 @@
 	<p id="allmodel"></p>
 	<hr/>
 
+<!-- ========================================== BODY - SECTION 4: Interpreter as Identity ============================================== -->
+	<h2 style="text-align: center">Interpreter as Identity</h2>
+	<div>
+	<div style="font-weight:bold;text-align:left;">Select Interpreter as Identity</div>
+	<br/>
+
+	<input type="radio" id="GradSaliency" name="identity" value="GradSaliency">GradSaliency
+	<input type="radio" id="SmoothGrad" name="identity" value="SmoothGrad" >SmoothGrad
+	<input type="radio" id="MASK" name="identity" value="MASK" checked="checked">MASK
+	<input type="radio" id="GradCam" name="identity" value="GradCam" >GradCam
+	<input type="radio" id="GuidedBackpropGrad" name="identity" value="GuidedBackpropGrad" >GuidedBackpropGrad
+	<br/>
+	<br/>
+	<button type="button" style="font-weight:bold;text-align:center; width: 180px; height: 20px; color: black;font-weight:bold;font-family:Palatino; font-size: 15px;" onclick="SelectIdentity()">Submit Identity</button>
+	<br/>
+	<p id="interpreter"></p>
+	<hr/>
 
 
-<!-- =================================================================================== -->
+
+
+
+<!-- ========================================== BODY - SECTION 5: DECLARATIVE QUERY ============================================== -->
 	<h2 style="text-align: center">Declarative Query</h2>
 	<form name="myForm">
 	<strong>Please Input i-Algebra Declarative Query Below:</strong></br>
@@ -361,7 +302,7 @@
 
 
 
-<!-- =================================================================================== -->
+<!-- ========================================== BODY - SECTION 6: INTERPRETATION ============================================== -->
 	<h2 style="text-align: center">iAlgebra Interpretation</h2>
 	<p id="server"></p>
 	<img id="myImage" style="width: 600px;">

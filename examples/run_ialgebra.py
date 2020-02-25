@@ -44,6 +44,7 @@ def main(config):
     _operator_class = Operator(identity_name, dataset, device = device)
     operator = getattr(_operator_class, operator_name)
 
+    
 
     # # one model, multi models;  one input, multiple inputs
     # bx = X_all[0:2]

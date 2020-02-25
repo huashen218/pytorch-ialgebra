@@ -27,6 +27,7 @@ The `requirements.txt` file lists all python libraries that *Pytorch-iAlgebra* d
 $ pip install -r requirements.txt
 ```
 
+
 ------
 ***Pytorch-iAlgebra* Installation**
 ----
@@ -43,7 +44,6 @@ $ python setup.py install
 ```
 
 
-
 ----
 ***Pytorch-iAlgebra* Examples**
 ----
@@ -56,10 +56,10 @@ Run the server by
 ```console
 $ cd pytorch-ialgebra/frontend_demo
 $ python server.py -s "http://your-server-address" -p your-port -f "./ialgebra.html"
-  (e.g., python server.py -s "http://university.edu" -p 8890 -f "./ialgebra.html")
+  (e.g., python server.py -s "http://server.university.edu" -p 8890 -f "./ialgebra.html")
 ```
 
-Then you can open the User Interface (UI) at: `http://your-server-address:port/./ialgebra.html` (The UI demo is shown below), and make interactive interpretaiton.
+Then you can open the User Interface (UI) at: `http://your-server-address:your-port/./ialgebra.html` (The UI demo is shown below), and make interactive interpretaiton.
 
 ![Demo of iAlgebra](https://github.com/huashen218/pytorch-ialgebra/blob/master/frontend_demo/ialgebra_ui_demo.png?raw=true "Demo of iAlgebra")
 
@@ -82,6 +82,7 @@ heatmap, heatmapimg = operator(bx, by, model_list)
 vis_saliancy_map(heatmap, heatmapimg)
 save_attribution_map(heatmap, heatmapimg, './')
 ```
+
 
 ----
 **Citing this Work**
