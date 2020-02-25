@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 import torch.nn as nn
 from collections import OrderedDict
-from torchvision import models
 import torch.utils.model_zoo as model_zoo
+from torchvision import models
 from torchvision.models.resnet import model_urls
-
 from ialgebra.models import *
 
 fc_dim_config = {

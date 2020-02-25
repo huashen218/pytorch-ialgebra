@@ -1,10 +1,9 @@
-from ialgebra.models import *
 import torch.nn as nn
 from collections import OrderedDict
-from torchvision import models
 import torch.utils.model_zoo as model_zoo
+from torchvision import models
 from torchvision.models.vgg import model_urls
-
+from ialgebra.models import *
 
 fc_dim_config = {
     # 'cifar10':  [64*7*7, 128*7*7, 256*7*7, 512*7*7, 512*7*7], 

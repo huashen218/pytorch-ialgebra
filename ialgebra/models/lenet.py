@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from .model import *
 import torch.nn as nn
 from collections import OrderedDict
-
+from ialgebra.models import *
 
 fc_dim_config = {
     'mnist':  [20*12*12, 50*4*4]

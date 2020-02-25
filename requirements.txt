@@ -1,26 +1,23 @@
+# Library dependencies for the Pytorch-iAlgebra code. You need to install these by:
+# 'pip isntall -r requirements.txt'
 
-# for neural network examples
+
+### LIBRARIES FOR USER INTERFACE SERVER ###
 argparse
-http.server
+httpserver
 threding
 webbrowser
 
+
+### LIBRARIES FOR PYTORCH-IALGEBRA FUNCTIONS ###
+os
+sys
+pyyaml
+numpy
+tqdm
+collections
 cv2
 torch
 torchvision
-numpy
-collections
-sys
-os
-time
 matplotlib
 visdom
-
-
-# For declarative query 
-pyyaml
-
-
-# for visualization
-cv2
-
