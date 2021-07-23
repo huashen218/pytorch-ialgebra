@@ -83,7 +83,7 @@ vis_saliancy_map(heatmap, heatmapimg)
 save_attribution_map(heatmap, heatmapimg, './')
 ```
 
-
+<!-- 
 ----
 **Citing this Work**
 ----
@@ -94,4 +94,4 @@ When using *Pytorch-iAlgebra*, please use the following citation:
     title={i-Algebra: Towards Interactive Interpretability of Neural Nets},
     year={2020}
 }
-```
+``` -->
